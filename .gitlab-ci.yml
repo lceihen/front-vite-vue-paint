@@ -14,8 +14,11 @@ image: node:16.3.0
 #     - if [ $(docker ps -aq --filter name=$CI_PROJECT_NAME) ]; then docker rm -f $CI_PROJECT_NAME;fi
 #     - docker run  -p 8086:80 -d  --name $CI_PROJECT_NAME container
 
+# - build
+# dependencies:
+#   - build
+
 stages:
-  # - build
   - deploy
 
 build:
@@ -33,5 +36,3 @@ deploy:
   stage: deploy
   script:
     - docker-compose up -d
-  # dependencies:
-  #   - build
