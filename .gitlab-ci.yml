@@ -33,5 +33,5 @@ deploy:
   stage: deploy
   script:
     - docker-compose up -d
-  dependencies:
-    - build
+  # dependencies:
+  #   - build
