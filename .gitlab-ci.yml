@@ -17,6 +17,7 @@ image: node:16.3.0
 # - build
 # dependencies:
 #   - build
+#1
 
 stages:
   - deploy
