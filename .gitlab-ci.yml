@@ -1,0 +1,37 @@
+image: node:16.3.0
+
+# stages:
+#  - deploy
+
+# job_deploy:
+#   stage: deploy
+#   image: docker
+#   tags:
+#     - front
+#   script:
+#     - echo 'deploy'
+#     - docker build -t container .
+#     - if [ $(docker ps -aq --filter name=$CI_PROJECT_NAME) ]; then docker rm -f $CI_PROJECT_NAME;fi
+#     - docker run  -p 8086:80 -d  --name $CI_PROJECT_NAME container
+
+stages:
+  - build
+  - deploy
+
+build:
+  image: docker/compose:latest
+  stage: build
+  script:
+    - docker-compose build
+  artifacts:
+    paths:
+      - ./
+      - docker-compose.yml
+
+deploy:
+  image: docker/compose:latest
+  stage: deploy
+  script:
+    - docker-compose up -d
+  dependencies:
+    - build

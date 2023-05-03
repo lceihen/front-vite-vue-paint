@@ -1,0 +1,18 @@
+version: '3'
+services:
+  domain:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.canvas.rule=Host(`canvas.abclive.cloud`)'
+      # - "traefik.http.services.canvas.loadbalancer.server.port=80"
+      - 'traefik.http.routers.canvas.tls.certresolver=le'
+      - 'traefik.http.routers.canvas.tls=true'
+      - 'traefik.http.routers.canvas.entrypoints=websecure'
+
+networks:
+  default:
+    external:
+      name: traefik_default
