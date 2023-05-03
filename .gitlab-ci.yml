@@ -22,15 +22,15 @@ image: node:16.3.0
 stages:
   - deploy
 
-build:
-  image: docker/compose:latest
-  stage: build
-  script:
-    - docker-compose build
-  artifacts:
-    paths:
-      - ./
-      - docker-compose.yml
+# build:
+#   image: docker/compose:latest
+#   stage: build
+#   script:
+#     - docker-compose build
+#   artifacts:
+#     paths:
+#       - ./
+#       - docker-compose.yml
 
 deploy:
   image: docker/compose:latest
