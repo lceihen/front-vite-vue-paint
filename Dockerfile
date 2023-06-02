@@ -1,19 +1,17 @@
-FROM node:16.14.0-alpine as builder
+FROM node:14-alpine as builder
 
 WORKDIR /code
 
-ADD package.json pnpm-lock.yaml /code/
+ADD package.json package-lock.json /code/
 
 RUN npm config set registry http://registry.npm.taobao.org/
 
-RUN npm install -g pnpm
-
-RUN pnpm install
+RUN npm install
 
 ADD . /code
 
-RUN pnpm run build
+RUN npm run build
 
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder code/dist /usr/share/nginx/html
+COPY --from=builder code/build /usr/share/nginx/html
