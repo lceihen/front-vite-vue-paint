@@ -1,4 +1,4 @@
-FROM node:14-alpine as builder
+FROM node:16.17.0 as builder
 
 WORKDIR /code
 
@@ -14,4 +14,4 @@ RUN npm run build
 
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder code/build /usr/share/nginx/html
+COPY --from=builder code/dist /usr/share/nginx/html
