@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-	<div>paint vue</div>
+	<div>paint vue1</div>
 </template>
 
 <style scoped lang="scss">
