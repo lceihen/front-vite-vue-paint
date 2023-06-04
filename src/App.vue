@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import Layout from '@/pages/Layout/index.vue'
+import { RouterView } from 'vue-router'
 </script>
 
-<template><Layout></Layout></template>
+<template>
+	<RouterView />
+</template>
 
 <style scoped></style>
