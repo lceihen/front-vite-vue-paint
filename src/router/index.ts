@@ -19,7 +19,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
 	console.log('phone', Cookies.get('phone'))
-	const _userName = Cookies.get('userName')
+
 	const _token = Cookies.get('token')
 
 	const { prodUrl, authUrl, clientId, secret } = authConfig
@@ -56,6 +56,7 @@ router.beforeEach(async (to, from, next) => {
 		Cookies.set('userName', userName)
 		Cookies.set('phone', phone)
 		Cookies.set('token', token)
+		Cookies.set('userInfo', JSON.stringify(userData))
 		next('/')
 		return
 	}
@@ -64,16 +65,7 @@ router.beforeEach(async (to, from, next) => {
 			`${authUrl}?redirectUri=${redirectUri}&clientId=${clientId}&secret=${secret}`
 		)
 	}
-	if (!_userName) {
-		const { data: userData }: any = await getUserInfo({
-			token: _token
-		})
 
-		const { userName, phone } = userData
-		Cookies.set('userName', userName)
-		Cookies.set('phone', phone)
-		Cookies.set('token', _token as string)
-	}
 	next()
 })
 
