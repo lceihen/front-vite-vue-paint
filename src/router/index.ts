@@ -21,6 +21,7 @@ router.beforeEach(async (to, from, next) => {
 	console.log('phone', Cookies.get('phone'))
 	const _userName = Cookies.get('userName')
 	const _token = Cookies.get('token')
+
 	const { prodUrl, authUrl, clientId, secret } = authConfig
 	const redirectUri = encodeURIComponent(`${prodUrl}/auth/callback`)
 
@@ -46,13 +47,16 @@ router.beforeEach(async (to, from, next) => {
 				`${authUrl}?redirectUri=${redirectUri}&clientId=${clientId}&secret=${secret}`
 			)
 		}
-		const { code: userResultCode, data: userData }: any = await getUserInfo({
+
+		const { data: userData }: any = await getUserInfo({
 			token: token
 		})
 
 		const { userName, phone } = userData
-
-		// next('/')
+		Cookies.set('userName', userName)
+		Cookies.set('phone', phone)
+		Cookies.set('token', token)
+		next('/')
 		return
 	}
 	if (!_token) {
@@ -61,6 +65,14 @@ router.beforeEach(async (to, from, next) => {
 		)
 	}
 	if (!_userName) {
+		const { data: userData }: any = await getUserInfo({
+			token: _token
+		})
+
+		const { userName, phone } = userData
+		Cookies.set('userName', userName)
+		Cookies.set('phone', phone)
+		Cookies.set('token', _token as string)
 	}
 	next()
 })
