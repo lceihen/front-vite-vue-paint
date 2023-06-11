@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie'
+
 export const handleGetParamString = (data: any = {}) => {
 	const queryArray: Array<string> = []
 	Object.keys(data).map((key) => {
@@ -65,6 +67,10 @@ export default (props: IRequestProps) => {
 			})
 			.then((res) => {
 				if (res?.code === '-1') {
+					reject(res)
+				}
+				if (res?.code === '-10000') {
+					Cookies.remove('token')
 					reject(res)
 				}
 				resolve(res)
