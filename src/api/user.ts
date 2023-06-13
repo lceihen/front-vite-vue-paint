@@ -6,3 +6,9 @@ export const getUserInfo = (params: any) => {
 		url: '/api/user'
 	})
 }
+export const getUserList = (params: any) => {
+	return request({
+		params,
+		url: '/api/user/getUserList'
+	})
+}

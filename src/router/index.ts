@@ -23,10 +23,12 @@ router.beforeEach(async (to, from, next) => {
 	const _token = Cookies.get('token')
 
 	const { prodUrl, authUrl, clientId, secret } = authConfig
-	const redirectUri = encodeURIComponent(`${prodUrl}/auth/callback`)
+	const redirectUri = encodeURIComponent(`${prodUrl}`)
 
 	const { path, query } = to
-	const { code } = query || {}
+	const { code, userName } = query || {}
+
+	// userName && Cookies.set('userName', userName as string)
 
 	if (path === '/error') {
 		next()
@@ -48,19 +50,20 @@ router.beforeEach(async (to, from, next) => {
 			)
 		}
 
+		// Cookies.set('token', token)
+
 		const { data: userData }: any = await getUserInfo({
 			token: token
 		})
 
-		const { userName, phone } = userData
-		Cookies.set('userName', userName)
-		Cookies.set('phone', phone)
-		Cookies.set('token', token)
-		Cookies.set('userInfo', JSON.stringify(userData))
+		const { phone } = userData
+
+		// Cookies.set('phone', phone)
+		// Cookies.set('userInfo', JSON.stringify(userData))
 		next('/')
 		return
 	}
-	if (!_token) {
+	if (path === '/login') {
 		window.location.replace(
 			`${authUrl}?redirectUri=${redirectUri}&clientId=${clientId}&secret=${secret}`
 		)

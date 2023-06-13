@@ -70,7 +70,7 @@ export default (props: IRequestProps) => {
 					reject(res)
 				}
 				if (res?.code === '-10000') {
-					Cookies.remove('token')
+					window.location.href = '/login'
 					reject(res)
 				}
 				resolve(res)
