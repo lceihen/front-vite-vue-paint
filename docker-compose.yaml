@@ -1,16 +1,19 @@
 version: '3'
 services:
   domain:
+    container_name: paint-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHORT_SHA}
     build:
       context: .
       dockerfile: Dockerfile
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.canvas.rule=Host(`canvas.abclive.cloud`)'
-      # - "traefik.http.services.canvas.loadbalancer.server.port=80"
-      - 'traefik.http.routers.canvas.tls.certresolver=le'
-      - 'traefik.http.routers.canvas.tls=true'
-      - 'traefik.http.routers.canvas.entrypoints=websecure'
+      - 'traefik.http.routers.canvas.entrypoints=web'
+
+      - 'traefik.http.routers.canvasHttps.rule=Host(`canvas.abclive.cloud`)'
+      - 'traefik.http.routers.canvasHttps.tls.certresolver=le'
+      - 'traefik.http.routers.canvasHttps.tls=true'
+      - 'traefik.http.routers.canvasHttps.entrypoints=websecure'
 
 networks:
   default:
