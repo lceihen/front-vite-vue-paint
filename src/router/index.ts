@@ -18,17 +18,11 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-	console.log('phone', Cookies.get('phone'))
-
-	const _token = Cookies.get('token')
-
 	const { prodUrl, authUrl, clientId, secret } = authConfig
 	const redirectUri = encodeURIComponent(`${prodUrl}`)
 
 	const { path, query } = to
-	const { code, userName } = query || {}
-
-	// userName && Cookies.set('userName', userName as string)
+	const { code } = query || {}
 
 	if (path === '/error') {
 		next()
@@ -43,23 +37,17 @@ router.beforeEach(async (to, from, next) => {
 		})
 
 		const token = tokenResult?.data?.token
-
+		debugger
 		if (!token) {
 			window.location.replace(
 				`${authUrl}?redirectUri=${redirectUri}&clientId=${clientId}&secret=${secret}`
 			)
 		}
 
-		// Cookies.set('token', token)
-
-		const { data: userData }: any = await getUserInfo({
+		await getUserInfo({
 			token: token
 		})
 
-		const { phone } = userData
-
-		// Cookies.set('phone', phone)
-		// Cookies.set('userInfo', JSON.stringify(userData))
 		next('/')
 		return
 	}

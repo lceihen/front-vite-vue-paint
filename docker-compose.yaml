@@ -18,10 +18,10 @@ services:
               '
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.canvas.rule=Host(`canvas.abclive.cloud`)'
+      - 'traefik.http.routers.canvas.rule=Host(`${DOMAIN_NAME}.abclive.cloud`)'
       - 'traefik.http.routers.canvas.entrypoints=web'
 
-      - 'traefik.http.routers.canvasHttps.rule=Host(`canvas.abclive.cloud`)'
+      - 'traefik.http.routers.canvasHttps.rule=Host(`${DOMAIN_NAME}.abclive.cloud`)'
       - 'traefik.http.routers.canvasHttps.tls.certresolver=le'
       - 'traefik.http.routers.canvasHttps.tls=true'
       - 'traefik.http.routers.canvasHttps.entrypoints=websecure'
