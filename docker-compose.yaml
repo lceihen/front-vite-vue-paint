@@ -18,7 +18,7 @@ services:
     #           '
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.canvas.rule=Host(`${SELF_DOMAIN_NAME}.abclive.cloud`)'
+      - 'traefik.http.routers.canvas.rule=Host(`canvas${SELF_DOMAIN_NAME}.abclive.cloud`)'
       - 'traefik.http.routers.canvas.entrypoints=web'
 
       - 'traefik.http.routers.canvasHttps.rule=Host(`canvas${SELF_DOMAIN_NAME}.abclive.cloud`)'
