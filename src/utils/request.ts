@@ -1,5 +1,3 @@
-import Cookies from 'js-cookie'
-
 export const handleGetParamString = (data: any = {}) => {
 	const queryArray: Array<string> = []
 	Object.keys(data).map((key) => {
