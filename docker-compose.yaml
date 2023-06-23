@@ -5,23 +5,23 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      - DOMAIN_NAME=${CI_COMMIT_REF_NAME}
-    command: >
-      sh -c 'if [ "$DOMAIN_NAME" = "master" ]; then
-                DOMAIN="canvas.abclive.cloud";
-              else
-                DOMAIN="canvas-${DOMAIN_NAME}.abclive.cloud";
-              fi;
-              echo "Setting domain to $DOMAIN";
-              # 启动应用并使用 $DOMAIN 进行配置
-              '
+    # environment:
+    #   - DOMAIN_NAME=${CI_COMMIT_REF_NAME}
+    # command: >
+    #   sh -c 'if [ "$DOMAIN_NAME" = "master" ]; then
+    #             DOMAIN="canvas.abclive.cloud";
+    #           else
+    #             DOMAIN="canvas-${DOMAIN_NAME}.abclive.cloud";
+    #           fi;
+    #           echo "Setting domain to $DOMAIN";
+    #           # 启动应用并使用 $DOMAIN 进行配置
+    #           '
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.canvas.rule=Host(`canvas.abclive.cloud`)'
+      - 'traefik.http.routers.canvas.rule=Host(`${SELF_DOMAIN_NAME}.abclive.cloud`)'
       - 'traefik.http.routers.canvas.entrypoints=web'
 
-      - 'traefik.http.routers.canvasHttps.rule=Host(`canvas.abclive.cloud`)'
+      - 'traefik.http.routers.canvasHttps.rule=Host(`canvas${SELF_DOMAIN_NAME}.abclive.cloud`)'
       - 'traefik.http.routers.canvasHttps.tls.certresolver=le'
       - 'traefik.http.routers.canvasHttps.tls=true'
       - 'traefik.http.routers.canvasHttps.entrypoints=websecure'
