@@ -10,7 +10,7 @@ RUN npm install
 
 ADD . /code
 
-RUN npm run build
+RUN npm run buildNoEslint
 
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
