@@ -42,4 +42,4 @@ deploy:
     - sed 's/servername/'"$CI_COMMIT_REF_NAME"'/g' docker-compose.yaml >docker-compose-updated.yaml
     - cat docker-compose-updated.yaml
   script:
-    - docker-compose up -d --build
+    - docker-compose -f docker-compose-updated.yaml up -d --build
