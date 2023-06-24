@@ -39,7 +39,7 @@ deploy:
     - if [[ "$CI_COMMIT_REF_NAME" == "master" ]] || [[ "$CI_COMMIT_REF_NAME" == "main" ]]; then  echo "SELF_DOMAIN_NAME=''" >> .env; else echo "SELF_DOMAIN_NAME=-$CI_COMMIT_REF_NAME" >> .env;  fi;
     - ls -las
     - pwd
-    - sed -i "s/serverName/$CI_COMMIT_REF_NAME/g" docker-compose.yaml
+    - sed -i "s/$CI_COMMIT_REF_NAME/serverName/g" docker-compose.yaml
     - cat docker-compose.yaml
   script:
     - docker-compose up -d --build
