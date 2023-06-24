@@ -10,7 +10,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<div>main1</div>
+	<div>feature</div>
 </template>
 
 <style scoped lang="scss">
