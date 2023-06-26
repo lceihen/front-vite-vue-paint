@@ -10,7 +10,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<div>main1</div>
+	<div>main1 测试gitlab同步性</div>
 </template>
 
 <style scoped lang="scss">
