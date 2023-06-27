@@ -35,6 +35,8 @@ stages:
 deploy:
   image: docker/compose:latest
   stage: deploy
+  tags:
+    - front
   before_script:
     - if [[ "$CI_COMMIT_REF_NAME" == "master" ]] || [[ "$CI_COMMIT_REF_NAME" == "main" ]]; then  echo "SELF_DOMAIN_NAME=''" >> .env; else echo "SELF_DOMAIN_NAME=-$CI_COMMIT_REF_NAME" >> .env;  fi;
     - ls -las
