@@ -16,6 +16,11 @@ services:
       - 'traefik.http.routers.canvasHttps${SELF_DOMAIN_NAME}.tls=true'
       - 'traefik.http.routers.canvasHttps${SELF_DOMAIN_NAME}.entrypoints=websecure'
 
+      - 'traefik.http.routers.oslivecanvasHttps${SELF_DOMAIN_NAME}.rule=Host(`canvas${SELF_DOMAIN_NAME}.oslive.cloud`)'
+      - 'traefik.http.routers.oslivecanvasHttps${SELF_DOMAIN_NAME}.tls.certresolver=le'
+      - 'traefik.http.routers.oslivecanvasHttps${SELF_DOMAIN_NAME}.tls=true'
+      - 'traefik.http.routers.oslivecanvasHttps${SELF_DOMAIN_NAME}.entrypoints=websecure'
+
 networks:
   default:
     external:
