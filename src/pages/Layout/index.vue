@@ -10,7 +10,8 @@ const pageData = reactive({
 	originY: 0,
 	canvasWorking: false,
 	historyViews: [],
-	delHistoryViews: []
+	delHistoryViews: [],
+	enlargeTimes: 1.5
 })
 
 const canvasConfig = reactive({
@@ -28,7 +29,12 @@ onMounted(() => {
 	const height = window.innerHeight - 16
 	pageData.canvasWidth = width
 	pageData.canvasHeight = height
+
 	canvasContext.value = (canvasRef.value as HTMLCanvasElement).getContext('2d')
+	canvasContext.value.font = 'bold 24px Arial'
+	canvasContext.value.textAlign = 'center'
+	canvasContext.value.textBaseline = 'middle'
+	canvasContext.value?.fillText('Canvas', 10, 10)
 	handleSaveCurrentCanvas()
 })
 
@@ -58,7 +64,7 @@ const utilBtnList = [
 		key: 'eraser'
 	},
 	{
-		key: 'scale'
+		key: 'enlarge'
 	},
 	{
 		key: 'down load'
@@ -96,8 +102,27 @@ const handleClickBtn = (key: string) => {
 		case 'redo':
 			handleRedoCanvas()
 			break
+		case 'enlarge':
+			handleEnlargeCanvas()
+			break
 		default:
 			break
+	}
+}
+
+const handleEnlargeCanvas = () => {
+	const { canvasWidth, enlargeTimes, canvasHeight } = pageData
+	const newCanvasWidth = pageData.canvasWidth * enlargeTimes
+	const newCanvasHeight = pageData.canvasHeight * enlargeTimes
+
+	pageData.canvasWidth = newCanvasWidth
+	pageData.canvasHeight = newCanvasHeight
+
+	const drawXAxis = (newCanvasWidth - canvasWidth) / 2
+	const drawYAxis = (newCanvasWidth - canvasHeight) / 2
+	if (pageData.historyViews.length > 0) {
+		const lastedViewData = pageData.historyViews.slice(-1)[0]
+		canvasContext.value?.putImageData(lastedViewData, drawXAxis, drawYAxis)
 	}
 }
 
@@ -233,7 +258,7 @@ const handleSaveCurrentCanvas = () => {
 		<aside
 			:class="[
 				'transition-all ease-in-out duration-700 lg:h-4/5 lg:flex-col fixed lg:overflow-y-auto  w-10/12 lg:w-auto bottom-20    lg:mr-6  flex  flex-row lg:space-y-10 grow-0 bg-sky-50 p-4 cursor-default lg:right-0 box-border rounded-lg  overflow-x-scroll scrollbar-contain',
-				pageData.toolVisible ? '' : '-bottom-80 lg:-bottom-full'
+				pageData.toolVisible ? '' : '-bottom-60 lg:-bottom-full'
 			]"
 		>
 			<button
