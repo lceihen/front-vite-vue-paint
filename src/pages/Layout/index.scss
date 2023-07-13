@@ -1,0 +1,17 @@
+.cursor-pen {
+	cursor: url(../../assets/images/as3vo-rn6lg-001.ico), auto;
+}
+.scrollbar-contain::-webkit-scrollbar {
+	-webkit-column-width: 0;
+	width: 0;
+	display: none;
+}
+.scrollbar-contain::-webkit-scrollbar-track {
+	display: none;
+	width: 0;
+}
+
+.scrollbar-contain::-webkit-scrollbar-thumb {
+	display: none;
+	width: 0;
+}
