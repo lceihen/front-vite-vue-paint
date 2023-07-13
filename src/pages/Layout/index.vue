@@ -4,6 +4,8 @@ import { reactive, ref, onMounted } from 'vue'
 const pageData = reactive({
 	cursorType: true,
 	toolVisible: true,
+	canvasWidth: '0',
+	canvasHeight: '0',
 	originX: 0,
 	originY: 0,
 	canvasWorking: false
@@ -18,6 +20,9 @@ const canvasRef = ref<HTMLCanvasElement | null>(null)
 const canvasContext = ref<CanvasRenderingContext2D | null>(null)
 
 onMounted(() => {
+	// -8是因为border宽度是8
+	pageData.canvasWidth = window.innerWidth - 16
+	pageData.canvasHeight = window.innerHeight - 16
 	canvasContext.value = (canvasRef.value as HTMLCanvasElement).getContext('2d')
 	console.log('canvasContext----', canvasContext)
 })
@@ -60,6 +65,9 @@ const handleClickBtn = (key: string) => {
 		case 'toggle cursor':
 			pageData.cursorType = !pageData.cursorType
 			break
+		case 'clean':
+			pageData.originX = 0
+			pageData.originY = 0
 
 		default:
 			break
@@ -76,16 +84,18 @@ const handleCanvasStartWork = (event: any) => {
 
 	const { lineWidth, strokeStyle } = canvasConfig
 
-	canvasContext.value.lineWidth = 5
+	canvasContext.value.lineWidth = lineWidth
 	canvasContext.value.strokeStyle = strokeStyle
+	// canvasContext.value.antialias = 'subpixel'
+	// canvasContext.value.imageSmoothingEnabled = true
 	canvasContext.value.moveTo(pageData.originX, pageData.originY)
 	canvasContext.value.beginPath()
 	pageData.originX = clientX
-	pageData.originY = clientY - 24
+	pageData.originY = clientY + 24
 	pageData.canvasWorking = true
 }
 
-const handleCanvasOverWork = (e: Event) => {
+const handleCanvasOverWork = (event: Event) => {
 	const { offsetX, offsetY } = event
 	const { canvasWorking } = pageData
 	if (!canvasWorking) return
@@ -96,6 +106,8 @@ const handleCanvasOverWork = (e: Event) => {
 const handleCanvasFinishWork = () => {
 	pageData.canvasWorking = false
 	console.log('handleFinishCanvasWork')
+	pageData.originX = 0
+	pageData.originY = 0
 }
 </script>
 
@@ -105,7 +117,7 @@ const handleCanvasFinishWork = () => {
 	>
 		<body
 			:class="[
-				pageData.cursorType === true ? 'cursor-pen' : 'cursor-grab',
+				pageData.cursorType === true ? 'cursor-pen-contain' : 'cursor-grab',
 				'border-8 grow overflow-scroll box-border w-screen h-screen  scrollbar-contain'
 			]"
 		>
@@ -119,8 +131,8 @@ const handleCanvasFinishWork = () => {
 				@touchstart="handleCanvasStartWork"
 				@touchmove="handleCanvasOverWork"
 				@touchend="handleCanvasFinishWork"
-				width="2600"
-				height="2600"
+				:width="pageData.canvasWidth"
+				:height="pageData.canvasHeight"
 			>
 				<!-- @pointerout="handleCanvasFinishWork" -->
 			</canvas>
