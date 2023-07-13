@@ -16,7 +16,7 @@ services:
       - 'traefik.http.routers.canvasHttps${SELF_DOMAIN_NAME}.tls=true'
       - 'traefik.http.routers.canvasHttps${SELF_DOMAIN_NAME}.entrypoints=websecure'
 
-      - 'traefik.http.routers.osliveCanvasHttp${SELF_DOMAIN_NAME}.rule=Host(`canvas${SELF_DOMAIN_NAME}.abclive.cloud`)'
+      - 'traefik.http.routers.osliveCanvasHttp${SELF_DOMAIN_NAME}.rule=Host(`canvas${SELF_DOMAIN_NAME}.oslive.cloud`)'
       - 'traefik.http.routers.osliveCanvasHttp${SELF_DOMAIN_NAME}.entrypoints=web'
       - 'traefik.http.routers.osliveCanvasHttps${SELF_DOMAIN_NAME}.rule=Host(`canvas${SELF_DOMAIN_NAME}.oslive.cloud`)'
       - 'traefik.http.routers.osliveCanvasHttps${SELF_DOMAIN_NAME}.tls.certresolver=le'
