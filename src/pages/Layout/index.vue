@@ -8,7 +8,9 @@ const pageData = reactive({
 	canvasHeight: '0',
 	originX: 0,
 	originY: 0,
-	canvasWorking: false
+	canvasWorking: false,
+	historyViews: [],
+	delHistoryViews: []
 })
 
 const canvasConfig = reactive({
@@ -21,10 +23,19 @@ const canvasContext = ref<CanvasRenderingContext2D | null>(null)
 
 onMounted(() => {
 	// -8是因为border宽度是8
-	pageData.canvasWidth = window.innerWidth - 16
-	pageData.canvasHeight = window.innerHeight - 16
+
+	const width = window.innerWidth - 16
+	const height = window.innerHeight - 16
+	pageData.canvasWidth = width
+	pageData.canvasHeight = height
 	canvasContext.value = (canvasRef.value as HTMLCanvasElement).getContext('2d')
-	console.log('canvasContext----', canvasContext)
+	const currentCaptureViewData = canvasContext.value?.getImageData(
+		0,
+		0,
+		width,
+		height
+	)
+	pageData.historyViews.push(currentCaptureViewData)
 })
 
 const utilBtnList = [
@@ -35,7 +46,10 @@ const utilBtnList = [
 		key: 'pen-setting'
 	},
 	{
-		key: 'revert'
+		key: 'undo'
+	},
+	{
+		key: 'redo'
 	},
 	{
 		key: 'clean'
@@ -68,9 +82,44 @@ const handleClickBtn = (key: string) => {
 		case 'clean':
 			pageData.originX = 0
 			pageData.originY = 0
-
+			canvasContext.value?.clearRect(
+				0,
+				0,
+				pageData.canvasWidth,
+				pageData.canvasHeight
+			)
+			break
+		case 'undo':
+			handleUndoCanvas()
+			break
+		case 'redo':
+			handleRedoCanvas()
+			break
 		default:
 			break
+	}
+}
+
+const handleRedoCanvas = () => {
+	if (pageData.delHistoryViews.length > 0) {
+		const redoViewsData = pageData.delHistoryViews.pop()
+		canvasContext.value?.putImageData(redoViewsData, 0, 0)
+		pageData.historyViews.push(redoViewsData)
+	}
+}
+
+const handleUndoCanvas = () => {
+	// 判断是否还能撤销
+	if (pageData.historyViews.length > 1) {
+		// 取出最后一个数据
+		const lastedViewData = pageData.historyViews.pop()
+		// 压入撤销队列
+		pageData.delHistoryViews.push(lastedViewData)
+
+		// 取出最后一个数据
+		const currentViewData = pageData.historyViews.slice(-1)[0]
+		// 重绘当前canvas
+		canvasContext.value?.putImageData(currentViewData, 0, 0)
 	}
 }
 
@@ -103,7 +152,19 @@ const handleCanvasOverWork = (event: Event) => {
 	canvasContext.value.stroke()
 }
 
-const handleCanvasFinishWork = () => {
+const handleCanvasFinishWork = (param) => {
+	const { leaveType } = param
+	pageData.delHistoryViews = []
+	if (leaveType !== 'out') {
+		const currentCaptureViewData = canvasContext.value?.getImageData(
+			0,
+			0,
+			pageData.canvasWidth,
+			pageData.canvasHeight
+		)
+		pageData.historyViews.push(currentCaptureViewData)
+	}
+
 	pageData.canvasWorking = false
 	console.log('handleFinishCanvasWork')
 	pageData.originX = 0
@@ -126,11 +187,26 @@ const handleCanvasFinishWork = () => {
 				class="box-border"
 				@mousedown="handleCanvasStartWork"
 				@mousemove="handleCanvasOverWork"
-				@mouseout="handleCanvasFinishWork"
-				@mouseup="handleCanvasFinishWork"
+				@mouseout="
+					() =>
+						handleCanvasFinishWork({
+							leaveType: 'out'
+						})
+				"
+				@mouseup="
+					() =>
+						handleCanvasFinishWork({
+							leaveType: 'up'
+						})
+				"
 				@touchstart="handleCanvasStartWork"
 				@touchmove="handleCanvasOverWork"
-				@touchend="handleCanvasFinishWork"
+				@touchend="
+					() =>
+						handleCanvasFinishWork({
+							leaveType: 'touchend'
+						})
+				"
 				:width="pageData.canvasWidth"
 				:height="pageData.canvasHeight"
 			>
