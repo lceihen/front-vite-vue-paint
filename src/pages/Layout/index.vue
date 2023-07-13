@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
-
+import { isMobileDevice } from '@/utils'
 const pageData = reactive({
 	cursorType: true,
 	toolVisible: true,
@@ -29,13 +29,7 @@ onMounted(() => {
 	pageData.canvasWidth = width
 	pageData.canvasHeight = height
 	canvasContext.value = (canvasRef.value as HTMLCanvasElement).getContext('2d')
-	const currentCaptureViewData = canvasContext.value?.getImageData(
-		0,
-		0,
-		width,
-		height
-	)
-	pageData.historyViews.push(currentCaptureViewData)
+	handleSaveCurrentCanvas()
 })
 
 const utilBtnList = [
@@ -80,6 +74,13 @@ const handleClickBtn = (key: string) => {
 			pageData.cursorType = !pageData.cursorType
 			break
 		case 'clean':
+			const currentCaptureViewData = canvasContext.value?.getImageData(
+				0,
+				0,
+				pageData.canvasWidth,
+				pageData.canvasHeight
+			)
+			pageData.delHistoryViews.push(currentCaptureViewData)
 			pageData.originX = 0
 			pageData.originY = 0
 			canvasContext.value?.clearRect(
@@ -128,47 +129,64 @@ const handleToolsVisible = () => {
 }
 
 const handleCanvasStartWork = (event: any) => {
-	const { clientX, clientY } = event
-	console.log('handleCanvasStartWork', clientX, clientY)
+	const { originX, originY } = pageData
+	const { xAxis, yAxis } = handleGetPointXY(event)
+	if (originX === xAxis && originY === yAxis) return
 
 	const { lineWidth, strokeStyle } = canvasConfig
 
 	canvasContext.value.lineWidth = lineWidth
 	canvasContext.value.strokeStyle = strokeStyle
-	// canvasContext.value.antialias = 'subpixel'
-	// canvasContext.value.imageSmoothingEnabled = true
-	canvasContext.value.moveTo(pageData.originX, pageData.originY)
+
+	canvasContext.value.moveTo(originX, originY)
 	canvasContext.value.beginPath()
-	pageData.originX = clientX
-	pageData.originY = clientY + 24
+	pageData.originX = xAxis
+	pageData.originY = yAxis
 	pageData.canvasWorking = true
 }
 
 const handleCanvasOverWork = (event: Event) => {
-	const { offsetX, offsetY } = event
+	const { xAxis, yAxis } = handleGetPointXY(event)
 	const { canvasWorking } = pageData
 	if (!canvasWorking) return
-	canvasContext.value.lineTo(offsetX, offsetY + 24)
+	canvasContext.value.lineTo(xAxis, yAxis)
 	canvasContext.value.stroke()
+}
+
+const handleGetPointXY = (event: Event) => {
+	if (isMobileDevice()) {
+		const { clientX, clientY } = event.targetTouches[0]
+		return { xAxis: clientX, yAxis: clientY - 8 }
+	} else {
+		const { offsetX, offsetY } = event
+		return {
+			xAxis: offsetX,
+			yAxis: offsetY + 24
+		}
+	}
 }
 
 const handleCanvasFinishWork = (param) => {
 	const { leaveType } = param
 	pageData.delHistoryViews = []
 	if (leaveType !== 'out') {
-		const currentCaptureViewData = canvasContext.value?.getImageData(
-			0,
-			0,
-			pageData.canvasWidth,
-			pageData.canvasHeight
-		)
-		pageData.historyViews.push(currentCaptureViewData)
+		handleSaveCurrentCanvas()
 	}
 
 	pageData.canvasWorking = false
 	console.log('handleFinishCanvasWork')
 	pageData.originX = 0
 	pageData.originY = 0
+}
+
+const handleSaveCurrentCanvas = () => {
+	const currentCaptureViewData = canvasContext.value?.getImageData(
+		0,
+		0,
+		pageData.canvasWidth,
+		pageData.canvasHeight
+	)
+	pageData.historyViews.push(currentCaptureViewData)
 }
 </script>
 
@@ -210,7 +228,6 @@ const handleCanvasFinishWork = (param) => {
 				:width="pageData.canvasWidth"
 				:height="pageData.canvasHeight"
 			>
-				<!-- @pointerout="handleCanvasFinishWork" -->
 			</canvas>
 		</body>
 		<aside
@@ -223,7 +240,7 @@ const handleCanvasFinishWork = (param) => {
 				v-for="btnItem in utilBtnList"
 				:key="btnItem.key"
 				@click="() => handleClickBtn(btnItem.key)"
-				class="w-32 rounded-full shrink-0 h-10 bg-sky-200 overflow-hidden lg:mr-0 cursor-default mr-6"
+				class="active:bg-sky-300 w-32 rounded-full shrink-0 h-10 bg-sky-200 overflow-hidden lg:mr-0 cursor-default mr-6"
 			>
 				{{ btnItem.key }}
 			</button>
