@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
 import { isMobileDevice } from '@/utils'
+
 const pageData = reactive({
 	cursorType: true,
 	toolVisible: true,
-	canvasWidth: '600',
-	canvasHeight: '600',
+	canvasWidth: 600,
+	canvasHeight: 600,
 	originX: 0,
 	originY: 0,
 	canvasWorking: false,
@@ -21,28 +22,44 @@ const canvasConfig = reactive({
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const canvasContext = ref<CanvasRenderingContext2D | null>(null)
+const canvasContainRef = ref<HTMLElement | null>(null)
 
 onMounted(() => {
 	// -8是因为border宽度是8
 
-	const width = window.innerWidth - 16
-	const height = window.innerHeight - 16
-	pageData.canvasWidth = width
-	pageData.canvasHeight = height
+	handleInitCanvas()
 
 	canvasContext.value = (canvasRef.value as HTMLCanvasElement).getContext('2d')
 	// handleDrawCanvasTitle()
 
 	handleSaveCurrentCanvas()
+
+	window.addEventListener('resize', () => {
+		handleResetCanvas()
+		handleReloadCanvasView()
+	})
 })
 
-const handleDrawCanvasTitle = () => {
-	setTimeout(() => {
-		canvasContext.value.font = 'bold 24px Arial'
-		canvasContext.value.textAlign = 'center'
-		canvasContext.value.textBaseline = 'middle'
-		canvasContext.value?.fillText('Canvas', 70, 70)
-	}, 0)
+const handleInitCanvas = () => {
+	pageData.canvasWidth = window.innerWidth - 16 - 4
+	pageData.canvasHeight = window.innerHeight - 16 - 4
+}
+
+const handleResetCanvas = () => {
+	const { canvasWidth: initCanvasWidth, canvasHeight: initCanvasHeight } =
+		pageData
+
+	const width =
+		initCanvasWidth > window.innerWidth - 16 - 4
+			? initCanvasWidth
+			: window.innerWidth - 16 - 4
+	const height =
+		initCanvasHeight > window.innerHeight - 16 - 4
+			? initCanvasHeight
+			: window.innerHeight - 16 - 4
+
+	pageData.canvasWidth = width
+	pageData.canvasHeight = height
 }
 
 const utilBtnList = [
@@ -76,10 +93,10 @@ const utilBtnList = [
 	},
 
 	{
-		key: 'down load'
+		key: 'download'
 	},
 	{
-		key: 'unlimted area'
+		key: 'unlimted-area'
 	}
 ]
 
@@ -115,27 +132,52 @@ const handleClickBtn = (key: string) => {
 			handleEnlargeCanvas()
 			// handleDrawCanvasTitle()
 			break
+		case 'download':
+			handleCaptureCanvas()
 		default:
 			break
 	}
 }
+const handleCaptureCanvas = () => {
+	const viewData = canvasRef.value?.toDataURL('image/png')
+	const link = document.createElement('a')
+	link.href = viewData
+	link.download = `${new Date()}.png`
+	link.click()
+}
 
 const handleEnlargeCanvas = () => {
-	const { canvasWidth, enlargeTimes, canvasHeight } = pageData
+	const { enlargeTimes } = pageData
+	const { canvasWidth: initCanvasWidth, canvasHeight: initCanvasHeight } =
+		pageData
 	const newCanvasWidth = pageData.canvasWidth * enlargeTimes
 	const newCanvasHeight = pageData.canvasHeight * enlargeTimes
 
 	pageData.canvasWidth = newCanvasWidth
 	pageData.canvasHeight = newCanvasHeight
 
+	const offsetX = (newCanvasWidth - initCanvasWidth) / 2
+
+	const offsetY = (newCanvasWidth - initCanvasHeight) / 2
+
+	handleReloadCanvasView({
+		offsetX: offsetX > 0 ? offsetX : 0,
+		offsetY: offsetY > 0 ? offsetY : 0
+	})
+}
+
+const handleReloadCanvasView = (resetData: any) => {
+	const { offsetX = 0, offsetY = 0 } = resetData
+
 	setTimeout(() => {
-		const drawXAxis = (newCanvasWidth - canvasWidth) / 2
-		const drawYAxis = (newCanvasWidth - canvasHeight) / 2
 		if (pageData.historyViews.length > 0) {
 			const lastedViewData = pageData.historyViews.slice(-1)[0]
-			canvasContext.value?.putImageData(lastedViewData, 0, 0)
+			canvasContext.value?.putImageData(lastedViewData, offsetX, offsetY)
 		}
-	}, 100)
+		if (offsetX && offsetY) {
+			canvasContainRef.value?.scrollTo(offsetX, offsetY)
+		}
+	}, 10)
 }
 
 const handleRedoCanvas = () => {
@@ -232,6 +274,7 @@ const handleSaveCurrentCanvas = () => {
 		class="flex flex-nowrap items-center justify-center scrollbar-contain relative overflow-scroll scroll-p-0 p-0"
 	>
 		<body
+			ref="canvasContainRef"
 			:class="[
 				pageData.cursorType ? 'cursor-pen-contain' : 'cursor-grab',
 				'border-8 grow overflow-scroll box-border w-screen h-screen  scrollbar-contain'
