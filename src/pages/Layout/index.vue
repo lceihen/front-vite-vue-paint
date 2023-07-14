@@ -4,8 +4,8 @@ import { isMobileDevice } from '@/utils'
 const pageData = reactive({
 	cursorType: true,
 	toolVisible: true,
-	canvasWidth: '0',
-	canvasHeight: '0',
+	canvasWidth: '600',
+	canvasHeight: '600',
 	originX: 0,
 	originY: 0,
 	canvasWorking: false,
@@ -31,12 +31,19 @@ onMounted(() => {
 	pageData.canvasHeight = height
 
 	canvasContext.value = (canvasRef.value as HTMLCanvasElement).getContext('2d')
-	canvasContext.value.font = 'bold 24px Arial'
-	canvasContext.value.textAlign = 'center'
-	canvasContext.value.textBaseline = 'middle'
-	canvasContext.value?.fillText('Canvas', 10, 10)
+	// handleDrawCanvasTitle()
+
 	handleSaveCurrentCanvas()
 })
+
+const handleDrawCanvasTitle = () => {
+	setTimeout(() => {
+		canvasContext.value.font = 'bold 24px Arial'
+		canvasContext.value.textAlign = 'center'
+		canvasContext.value.textBaseline = 'middle'
+		canvasContext.value?.fillText('Canvas', 70, 70)
+	}, 0)
+}
 
 const utilBtnList = [
 	{
@@ -47,6 +54,13 @@ const utilBtnList = [
 	},
 	{
 		key: 'undo'
+	},
+	{
+		key: 'eraser'
+	},
+
+	{
+		key: 'enlarge'
 	},
 	{
 		key: 'redo'
@@ -60,12 +74,7 @@ const utilBtnList = [
 	{
 		key: 'hand'
 	},
-	{
-		key: 'eraser'
-	},
-	{
-		key: 'enlarge'
-	},
+
 	{
 		key: 'down load'
 	},
@@ -76,7 +85,7 @@ const utilBtnList = [
 
 const handleClickBtn = (key: string) => {
 	switch (key) {
-		case 'toggle cursor':
+		case 'cursor':
 			pageData.cursorType = !pageData.cursorType
 			break
 		case 'clean':
@@ -104,6 +113,7 @@ const handleClickBtn = (key: string) => {
 			break
 		case 'enlarge':
 			handleEnlargeCanvas()
+			// handleDrawCanvasTitle()
 			break
 		default:
 			break
@@ -118,12 +128,14 @@ const handleEnlargeCanvas = () => {
 	pageData.canvasWidth = newCanvasWidth
 	pageData.canvasHeight = newCanvasHeight
 
-	const drawXAxis = (newCanvasWidth - canvasWidth) / 2
-	const drawYAxis = (newCanvasWidth - canvasHeight) / 2
-	if (pageData.historyViews.length > 0) {
-		const lastedViewData = pageData.historyViews.slice(-1)[0]
-		canvasContext.value?.putImageData(lastedViewData, drawXAxis, drawYAxis)
-	}
+	setTimeout(() => {
+		const drawXAxis = (newCanvasWidth - canvasWidth) / 2
+		const drawYAxis = (newCanvasWidth - canvasHeight) / 2
+		if (pageData.historyViews.length > 0) {
+			const lastedViewData = pageData.historyViews.slice(-1)[0]
+			canvasContext.value?.putImageData(lastedViewData, 0, 0)
+		}
+	}, 100)
 }
 
 const handleRedoCanvas = () => {
@@ -221,13 +233,13 @@ const handleSaveCurrentCanvas = () => {
 	>
 		<body
 			:class="[
-				pageData.cursorType === true ? 'cursor-pen-contain' : 'cursor-grab',
+				pageData.cursorType ? 'cursor-pen-contain' : 'cursor-grab',
 				'border-8 grow overflow-scroll box-border w-screen h-screen  scrollbar-contain'
 			]"
 		>
 			<canvas
 				ref="canvasRef"
-				class="box-border"
+				class="box-border border-2 border-sky-400"
 				@mousedown="handleCanvasStartWork"
 				@mousemove="handleCanvasOverWork"
 				@mouseout="
