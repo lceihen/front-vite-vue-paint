@@ -41,8 +41,10 @@ onMounted(() => {
 })
 
 const handleInitCanvas = () => {
-	pageData.canvasWidth = window.innerWidth - 16 - 4
-	pageData.canvasHeight = window.innerHeight - 16 - 4
+	pageData.canvasWidth = 600
+	pageData.canvasHeight = 600
+	// pageData.canvasWidth = window.innerWidth - 16 - 4
+	// pageData.canvasHeight = window.innerHeight - 16 - 4
 }
 
 const handleResetCanvas = () => {
@@ -64,6 +66,9 @@ const handleResetCanvas = () => {
 
 const utilBtnList = [
 	{
+		key: 'enlarge'
+	},
+	{
 		key: 'cursor'
 	},
 	{
@@ -76,9 +81,6 @@ const utilBtnList = [
 		key: 'eraser'
 	},
 
-	{
-		key: 'enlarge'
-	},
 	{
 		key: 'redo'
 	},
@@ -167,7 +169,7 @@ const handleEnlargeCanvas = () => {
 }
 
 const handleReloadCanvasView = (resetData: any) => {
-	const { offsetX = 0, offsetY = 0 } = resetData
+	const { offsetX = 0, offsetY = 0 } = resetData || {}
 
 	setTimeout(() => {
 		if (pageData.historyViews.length > 0) {
@@ -178,6 +180,8 @@ const handleReloadCanvasView = (resetData: any) => {
 			canvasContainRef.value?.scrollTo(offsetX, offsetY)
 		}
 	}, 10)
+	// pageData.originX = 0
+	// pageData.originY = 0
 }
 
 const handleRedoCanvas = () => {
@@ -207,9 +211,12 @@ const handleToolsVisible = () => {
 	pageData.toolVisible = !pageData.toolVisible
 }
 
-const handleCanvasStartWork = (event: any) => {
+const handleCanvasStartWork = (event: any, param) => {
+	if (isMobileDevice() && param?.startType === 'touch') return
 	const { originX, originY } = pageData
 	const { xAxis, yAxis } = handleGetPointXY(event)
+
+	console.log('xAxis, yAxis----', xAxis, yAxis)
 	if (originX === xAxis && originY === yAxis) return
 
 	const { lineWidth, strokeStyle } = canvasConfig
@@ -224,7 +231,7 @@ const handleCanvasStartWork = (event: any) => {
 	pageData.canvasWorking = true
 }
 
-const handleCanvasOverWork = (event: Event) => {
+const handleCanvasMoveWork = (event: Event) => {
 	const { xAxis, yAxis } = handleGetPointXY(event)
 	const { canvasWorking } = pageData
 	if (!canvasWorking) return
@@ -234,8 +241,15 @@ const handleCanvasOverWork = (event: Event) => {
 
 const handleGetPointXY = (event: Event) => {
 	if (isMobileDevice()) {
-		const { clientX, clientY } = event.targetTouches[0]
-		return { xAxis: clientX, yAxis: clientY - 8 }
+		// touches
+
+		// const touchParam = Boolean(event.targetTouches)
+		// 	? event.targetTouches[0]
+		// 	: event.touches
+		// 	? event.touches[0]
+		// 	: event
+		const { offsetX, offsetY } = event
+		return { xAxis: offsetX, yAxis: offsetY - 8 }
 	} else {
 		const { offsetX, offsetY } = event
 		return {
@@ -283,8 +297,8 @@ const handleSaveCurrentCanvas = () => {
 			<canvas
 				ref="canvasRef"
 				class="box-border border-2 border-sky-400"
-				@mousedown="handleCanvasStartWork"
-				@mousemove="handleCanvasOverWork"
+				@mousedown="(e) => handleCanvasStartWork(e)"
+				@mousemove="handleCanvasMoveWork"
 				@mouseout="
 					() =>
 						handleCanvasFinishWork({
@@ -297,8 +311,7 @@ const handleSaveCurrentCanvas = () => {
 							leaveType: 'up'
 						})
 				"
-				@touchstart="handleCanvasStartWork"
-				@touchmove="handleCanvasOverWork"
+				@touchmove="handleCanvasMoveWork"
 				@touchend="
 					() =>
 						handleCanvasFinishWork({
@@ -309,6 +322,12 @@ const handleSaveCurrentCanvas = () => {
 				:height="pageData.canvasHeight"
 			>
 			</canvas>
+			<!-- @touchstart="
+					(e) =>
+						handleCanvasStartWork(e, {
+							startType: 'touch'
+						})
+				" -->
 		</body>
 		<aside
 			:class="[

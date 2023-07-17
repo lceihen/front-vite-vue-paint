@@ -6,3 +6,12 @@
 html::-webkit-scrollbar {
 	display: none;
 }
+
+body {
+	height: 100%;
+	width: 100%;
+	/*top:0;
+    left:0;*/
+	overflow: hidden;
+	-webkit-overflow-scrolling: touch;
+}
