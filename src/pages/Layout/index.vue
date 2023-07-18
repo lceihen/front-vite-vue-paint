@@ -9,6 +9,8 @@ let lastOriginX = null
 
 let lastOriginY = null
 
+let time = null
+
 const pageData = reactive({
 	cursorType: 'pen',
 	toolVisible: true,
@@ -237,6 +239,15 @@ const handleCanvasStartWork = (event: any, param) => {
 	pageData.originY = yAxis
 }
 
+const _throttle = (fn, ...args) => {
+	if (!time) {
+		time = setTimeout(() => {
+			fn(...args)
+			time = null
+		}, 10)
+	}
+}
+
 const handleCanvasMoveWork = (event: Event) => {
 	if (!canvasWorking) return
 
@@ -251,8 +262,13 @@ const handleCanvasMoveWork = (event: Event) => {
 		// 	console.log('canvasParentRef--', canvasParentRef)
 		// 	return () => canvasParentRef.value?.scrollTo(scrollX, scrollY)
 		// }
-		// throttle( canvasParentRef.value?.scrollTo(scrollX, scrollY), 500)
-		canvasParentRef.value?.scrollBy(scrollX, scrollY)
+		_throttle(
+			() => canvasParentRef.value?.scrollBy(scrollX, scrollY),
+
+			canvasParentRef,
+			scrollX,
+			scrollY
+		)
 	}
 	lastOriginX = xAxis
 	lastOriginY = yAxis
