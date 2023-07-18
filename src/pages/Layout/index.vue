@@ -284,7 +284,7 @@ const handleCanvasMoveWork = (event: Event) => {
 		canvasContext.value.lineWidth = 10
 		canvasContext.value.lineTo(xAxis, yAxis)
 		canvasContext.value.stroke()
-		ctx.globalCompositeOperation = 'source-over'
+		canvasContext.value.globalCompositeOperation = 'source-over'
 		return
 	}
 
