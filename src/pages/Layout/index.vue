@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
 import { isMobileDevice } from '@/utils'
+import { throttle } from 'lodash'
 
 let canvasWorking = false
 
+let lastOriginX = null
+
+let lastOriginY = null
+
 const pageData = reactive({
-	cursorType: true,
+	cursorType: 'pen',
 	toolVisible: true,
 	canvasWidth: 600,
 	canvasHeight: 600,
@@ -23,7 +28,7 @@ const canvasConfig = reactive({
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const canvasContext = ref<CanvasRenderingContext2D | null>(null)
-const canvasContainRef = ref<HTMLElement | null>(null)
+const canvasParentRef = ref<HTMLElement | null>(null)
 
 onMounted(() => {
 	// -8是因为border宽度是8
@@ -70,16 +75,22 @@ const utilBtnList = [
 		key: 'enlarge'
 	},
 	{
-		key: 'cursor'
+		key: 'pen',
+		description: '钢笔'
+	},
+	{
+		key: 'grab',
+		description: '抓手'
+	},
+	{
+		key: 'eraser',
+		description: '橡皮擦'
 	},
 	{
 		key: 'pen-setting'
 	},
 	{
 		key: 'undo'
-	},
-	{
-		key: 'eraser'
 	},
 
 	{
@@ -91,9 +102,6 @@ const utilBtnList = [
 	{
 		key: 'pen'
 	},
-	{
-		key: 'hand'
-	},
 
 	{
 		key: 'download'
@@ -104,10 +112,14 @@ const utilBtnList = [
 ]
 
 const handleClickBtn = (key: string) => {
+	pageData.cursorType = ''
 	switch (key) {
-		case 'cursor':
-			pageData.cursorType = !pageData.cursorType
+		case 'pen':
+		case 'grab':
+		case 'eraser':
+			pageData.cursorType = key
 			break
+
 		case 'clean':
 			const currentCaptureViewData = canvasContext.value?.getImageData(
 				0,
@@ -137,6 +149,7 @@ const handleClickBtn = (key: string) => {
 			break
 		case 'download':
 			handleCaptureCanvas()
+			break
 		default:
 			break
 	}
@@ -167,6 +180,7 @@ const handleEnlargeCanvas = () => {
 		offsetX: offsetX > 0 ? offsetX : 0,
 		offsetY: offsetY > 0 ? offsetY : 0
 	})
+	pageData.cursorType = 'grab'
 }
 
 const handleReloadCanvasView = (resetData: any) => {
@@ -178,7 +192,7 @@ const handleReloadCanvasView = (resetData: any) => {
 			canvasContext.value?.putImageData(lastedViewData, offsetX, offsetY)
 		}
 		if (offsetX && offsetY) {
-			canvasContainRef.value?.scrollTo(offsetX, offsetY)
+			canvasParentRef.value?.scrollTo(offsetX, offsetY)
 		}
 	}, 10)
 }
@@ -224,10 +238,26 @@ const handleCanvasStartWork = (event: any, param) => {
 }
 
 const handleCanvasMoveWork = (event: Event) => {
-	const { xAxis, yAxis } = handleGetPointXY(event)
 	if (!canvasWorking) return
-	const { lineWidth, strokeStyle } = canvasConfig
 
+	const { xAxis, yAxis } = handleGetPointXY(event)
+
+	if (pageData.cursorType === 'grab' && lastOriginX && lastOriginY) {
+		const scrollX = xAxis - lastOriginX
+		const scrollY = yAxis - lastOriginY
+
+		console.log('scrollBy----', scrollX, scrollY, lastOriginX, lastOriginY)
+		// const canvasScroll = (canvasParentRef, scrollX, scrollY) => {
+		// 	console.log('canvasParentRef--', canvasParentRef)
+		// 	return () => canvasParentRef.value?.scrollTo(scrollX, scrollY)
+		// }
+		// throttle( canvasParentRef.value?.scrollTo(scrollX, scrollY), 500)
+		canvasParentRef.value?.scrollBy(scrollX, scrollY)
+	}
+	lastOriginX = xAxis
+	lastOriginY = yAxis
+	if (pageData.cursorType !== 'pen') return
+	const { lineWidth, strokeStyle } = canvasConfig
 	canvasContext.value.lineWidth = lineWidth
 	canvasContext.value.strokeStyle = strokeStyle
 	canvasContext.value.lineTo(xAxis, yAxis)
@@ -257,17 +287,20 @@ const handleGetPointXY = (event: Event) => {
 	}
 }
 
-const handleCanvasFinishWork = (param) => {
+const handleCanvasFinishWork = (event, param) => {
 	const { leaveType } = param
 	pageData.delHistoryViews = []
 	if (leaveType !== 'out') {
 		handleSaveCurrentCanvas()
 	}
+
 	canvasWorking = false
 
 	// canvasContext.value.beginPath()
 	pageData.originX = 0
 	pageData.originY = 0
+	lastOriginX = null
+	lastOriginY = null
 }
 
 const handleSaveCurrentCanvas = () => {
@@ -286,9 +319,9 @@ const handleSaveCurrentCanvas = () => {
 		class="flex flex-nowrap items-center justify-center scrollbar-contain relative overflow-scroll scroll-p-0 p-0"
 	>
 		<body
-			ref="canvasContainRef"
+			ref="canvasParentRef"
 			:class="[
-				pageData.cursorType ? 'cursor-pen-contain' : 'cursor-grab',
+				`cursor-${pageData.cursorType}`,
 				'border-8 grow overflow-scroll box-border w-screen h-screen  scrollbar-contain'
 			]"
 		>
@@ -298,22 +331,22 @@ const handleSaveCurrentCanvas = () => {
 				@mousedown="(e) => handleCanvasStartWork(e)"
 				@mousemove="handleCanvasMoveWork"
 				@mouseout="
-					() =>
-						handleCanvasFinishWork({
+					(e) =>
+						handleCanvasFinishWork(e, {
 							leaveType: 'out'
 						})
 				"
 				@mouseup="
-					() =>
-						handleCanvasFinishWork({
+					(e) =>
+						handleCanvasFinishWork(e, {
 							leaveType: 'up'
 						})
 				"
 				@touchmove="handleCanvasMoveWork"
 				@touchstart="handleCanvasStartWork"
 				@touchend="
-					() =>
-						handleCanvasFinishWork({
+					(e) =>
+						handleCanvasFinishWork(e, {
 							leaveType: 'touchend'
 						})
 				"
@@ -333,7 +366,10 @@ const handleSaveCurrentCanvas = () => {
 				v-for="btnItem in utilBtnList"
 				:key="btnItem.key"
 				@click="() => handleClickBtn(btnItem.key)"
-				class="active:bg-sky-300 w-32 rounded-full shrink-0 h-10 bg-sky-200 overflow-hidden lg:mr-0 cursor-default mr-6"
+				:class="[
+					'active:bg-sky-300 w-32 rounded-full shrink-0 h-10 bg-sky-200 overflow-hidden lg:mr-0 cursor-default mr-6',
+					pageData.cursorType === btnItem.key ? 'bg-sky-500' : ''
+				]"
 			>
 				{{ btnItem.key }}
 			</button>
