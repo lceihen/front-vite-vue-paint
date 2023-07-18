@@ -138,6 +138,7 @@ const handleClickBtn = (key: string) => {
 				pageData.canvasWidth,
 				pageData.canvasHeight
 			)
+			pageData.cursorType = lastCursorType
 			break
 		case 'undo':
 			handleUndoCanvas()
@@ -145,9 +146,11 @@ const handleClickBtn = (key: string) => {
 			break
 		case 'redo':
 			handleRedoCanvas()
+			pageData.cursorType = lastCursorType
 			break
 		case 'enlarge':
 			handleEnlargeCanvas()
+			pageData.cursorType = lastCursorType
 			// handleDrawCanvasTitle()
 			break
 		case 'download':
