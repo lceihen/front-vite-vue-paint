@@ -77,22 +77,24 @@ const utilBtnList = [
 		key: 'enlarge'
 	},
 	{
-		key: 'pen',
-		description: '钢笔'
-	},
-	{
-		key: 'grab',
-		description: '抓手'
+		key: 'undo'
 	},
 	{
 		key: 'eraser',
 		description: '橡皮擦'
 	},
 	{
-		key: 'pen-setting'
+		key: 'pen',
+		description: '钢笔'
 	},
+
 	{
-		key: 'undo'
+		key: 'grab',
+		description: '抓手'
+	},
+
+	{
+		key: 'pen-setting'
 	},
 
 	{
@@ -100,9 +102,6 @@ const utilBtnList = [
 	},
 	{
 		key: 'clean'
-	},
-	{
-		key: 'pen'
 	},
 
 	{
@@ -114,6 +113,7 @@ const utilBtnList = [
 ]
 
 const handleClickBtn = (key: string) => {
+	let lastCursorType = pageData.cursorType
 	pageData.cursorType = ''
 	switch (key) {
 		case 'pen':
@@ -141,6 +141,7 @@ const handleClickBtn = (key: string) => {
 			break
 		case 'undo':
 			handleUndoCanvas()
+			pageData.cursorType = lastCursorType
 			break
 		case 'redo':
 			handleRedoCanvas()
@@ -235,6 +236,7 @@ const handleCanvasStartWork = (event: any, param) => {
 
 	if (originX === xAxis && originY === yAxis) return
 	canvasContext.value.moveTo(xAxis, yAxis)
+
 	pageData.originX = xAxis
 	pageData.originY = yAxis
 }
@@ -250,7 +252,8 @@ const _throttle = (fn, ...args) => {
 
 const handleCanvasMoveWork = (event: Event) => {
 	if (!canvasWorking) return
-
+	// canvasContext.value?.beginPath()
+	console.log('pageData.cursorType', pageData.cursorType)
 	const { xAxis, yAxis } = handleGetPointXY(event)
 
 	if (pageData.cursorType === 'grab' && lastOriginX && lastOriginY) {
@@ -258,10 +261,7 @@ const handleCanvasMoveWork = (event: Event) => {
 		const scrollY = yAxis - lastOriginY
 
 		console.log('scrollBy----', scrollX, scrollY, lastOriginX, lastOriginY)
-		// const canvasScroll = (canvasParentRef, scrollX, scrollY) => {
-		// 	console.log('canvasParentRef--', canvasParentRef)
-		// 	return () => canvasParentRef.value?.scrollTo(scrollX, scrollY)
-		// }
+
 		_throttle(
 			() => canvasParentRef.value?.scrollBy(scrollX, scrollY),
 
@@ -270,14 +270,27 @@ const handleCanvasMoveWork = (event: Event) => {
 			scrollY
 		)
 	}
+
+	// 滑动效果保留坐标
 	lastOriginX = xAxis
 	lastOriginY = yAxis
-	if (pageData.cursorType !== 'pen') return
-	const { lineWidth, strokeStyle } = canvasConfig
-	canvasContext.value.lineWidth = lineWidth
-	canvasContext.value.strokeStyle = strokeStyle
-	canvasContext.value.lineTo(xAxis, yAxis)
-	canvasContext.value.stroke()
+
+	// 	橡皮擦功能
+	if (pageData.cursorType === 'eraser') {
+		canvasContext.value.globalCompositeOperation = 'destination-out' // 设置为橡皮擦效果
+		canvasContext.value.lineWidth = 10
+		canvasContext.value.lineTo(xAxis, yAxis)
+		canvasContext.value.stroke()
+		return
+	}
+
+	if (pageData.cursorType === 'pen') {
+		const { lineWidth, strokeStyle } = canvasConfig
+		canvasContext.value.lineWidth = lineWidth
+		canvasContext.value.strokeStyle = strokeStyle
+		canvasContext.value.lineTo(xAxis, yAxis)
+		canvasContext.value.stroke()
+	}
 }
 
 const handleGetPointXY = (event: Event) => {
@@ -312,7 +325,7 @@ const handleCanvasFinishWork = (event, param) => {
 
 	canvasWorking = false
 
-	// canvasContext.value.beginPath()
+	canvasContext.value.beginPath()
 	pageData.originX = 0
 	pageData.originY = 0
 	lastOriginX = null
