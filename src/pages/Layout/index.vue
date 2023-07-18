@@ -2,6 +2,8 @@
 import { reactive, ref, onMounted } from 'vue'
 import { isMobileDevice } from '@/utils'
 
+let canvasWorking = false
+
 const pageData = reactive({
 	cursorType: true,
 	toolVisible: true,
@@ -9,7 +11,6 @@ const pageData = reactive({
 	canvasHeight: 600,
 	originX: 0,
 	originY: 0,
-	canvasWorking: false,
 	historyViews: [],
 	delHistoryViews: [],
 	enlargeTimes: 1.5
@@ -43,8 +44,8 @@ onMounted(() => {
 const handleInitCanvas = () => {
 	pageData.canvasWidth = 600
 	pageData.canvasHeight = 600
-	// pageData.canvasWidth = window.innerWidth - 16 - 4
-	// pageData.canvasHeight = window.innerHeight - 16 - 4
+	pageData.canvasWidth = window.innerWidth - 16 - 4
+	pageData.canvasHeight = window.innerHeight - 16 - 4
 }
 
 const handleResetCanvas = () => {
@@ -59,7 +60,7 @@ const handleResetCanvas = () => {
 		initCanvasHeight > window.innerHeight - 16 - 4
 			? initCanvasHeight
 			: window.innerHeight - 16 - 4
-
+	console.log('reset width and height', width, height)
 	pageData.canvasWidth = width
 	pageData.canvasHeight = height
 }
@@ -161,7 +162,7 @@ const handleEnlargeCanvas = () => {
 	const offsetX = (newCanvasWidth - initCanvasWidth) / 2
 
 	const offsetY = (newCanvasWidth - initCanvasHeight) / 2
-
+	console.log('reset width and height', newCanvasWidth, newCanvasHeight)
 	handleReloadCanvasView({
 		offsetX: offsetX > 0 ? offsetX : 0,
 		offsetY: offsetY > 0 ? offsetY : 0
@@ -180,8 +181,6 @@ const handleReloadCanvasView = (resetData: any) => {
 			canvasContainRef.value?.scrollTo(offsetX, offsetY)
 		}
 	}, 10)
-	// pageData.originX = 0
-	// pageData.originY = 0
 }
 
 const handleRedoCanvas = () => {
@@ -209,47 +208,46 @@ const handleUndoCanvas = () => {
 
 const handleToolsVisible = () => {
 	pageData.toolVisible = !pageData.toolVisible
+	console.log('handleToolsVisible-----', !pageData.toolVisible)
 }
 
 const handleCanvasStartWork = (event: any, param) => {
-	if (isMobileDevice() && param?.startType === 'touch') return
+	canvasWorking = true
+
 	const { originX, originY } = pageData
 	const { xAxis, yAxis } = handleGetPointXY(event)
 
-	console.log('xAxis, yAxis----', xAxis, yAxis)
 	if (originX === xAxis && originY === yAxis) return
-
-	const { lineWidth, strokeStyle } = canvasConfig
-
-	canvasContext.value.lineWidth = lineWidth
-	canvasContext.value.strokeStyle = strokeStyle
-
-	canvasContext.value.moveTo(originX, originY)
-	canvasContext.value.beginPath()
+	canvasContext.value.moveTo(xAxis, yAxis)
 	pageData.originX = xAxis
 	pageData.originY = yAxis
-	pageData.canvasWorking = true
 }
 
 const handleCanvasMoveWork = (event: Event) => {
 	const { xAxis, yAxis } = handleGetPointXY(event)
-	const { canvasWorking } = pageData
 	if (!canvasWorking) return
+	const { lineWidth, strokeStyle } = canvasConfig
+
+	canvasContext.value.lineWidth = lineWidth
+	canvasContext.value.strokeStyle = strokeStyle
 	canvasContext.value.lineTo(xAxis, yAxis)
 	canvasContext.value.stroke()
 }
 
 const handleGetPointXY = (event: Event) => {
 	if (isMobileDevice()) {
-		// touches
+		if (event.offsetX) {
+			const { offsetX, offsetY } = event
 
-		// const touchParam = Boolean(event.targetTouches)
-		// 	? event.targetTouches[0]
-		// 	: event.touches
-		// 	? event.touches[0]
-		// 	: event
-		const { offsetX, offsetY } = event
-		return { xAxis: offsetX, yAxis: offsetY - 8 }
+			return { xAxis: offsetX, yAxis: offsetY - 8 }
+		} else {
+			const { currentTarget, touches } = event
+			const targetRect = currentTarget.getBoundingClientRect()
+			const touchX = touches[0].clientX - targetRect.left
+			const touchY = touches[0].clientY - targetRect.top
+
+			return { xAxis: touchX, yAxis: touchY - 8 }
+		}
 	} else {
 		const { offsetX, offsetY } = event
 		return {
@@ -265,9 +263,9 @@ const handleCanvasFinishWork = (param) => {
 	if (leaveType !== 'out') {
 		handleSaveCurrentCanvas()
 	}
+	canvasWorking = false
 
-	pageData.canvasWorking = false
-	console.log('handleFinishCanvasWork')
+	// canvasContext.value.beginPath()
 	pageData.originX = 0
 	pageData.originY = 0
 }
@@ -312,6 +310,7 @@ const handleSaveCurrentCanvas = () => {
 						})
 				"
 				@touchmove="handleCanvasMoveWork"
+				@touchstart="handleCanvasStartWork"
 				@touchend="
 					() =>
 						handleCanvasFinishWork({
@@ -322,17 +321,12 @@ const handleSaveCurrentCanvas = () => {
 				:height="pageData.canvasHeight"
 			>
 			</canvas>
-			<!-- @touchstart="
-					(e) =>
-						handleCanvasStartWork(e, {
-							startType: 'touch'
-						})
-				" -->
+			<!-- @touchstart="(e) => handleCanvasStartWork(e, { startType: 'touch' })" -->
 		</body>
 		<aside
 			:class="[
 				'transition-all ease-in-out duration-700 lg:h-4/5 lg:flex-col fixed lg:overflow-y-auto  w-10/12 lg:w-auto bottom-20    lg:mr-6  flex  flex-row lg:space-y-10 grow-0 bg-sky-50 p-4 cursor-default lg:right-0 box-border rounded-lg  overflow-x-scroll scrollbar-contain',
-				pageData.toolVisible ? '' : '-bottom-60 lg:-bottom-full'
+				pageData.toolVisible ? '' : '-bottom-40 lg:-bottom-full'
 			]"
 		>
 			<button
