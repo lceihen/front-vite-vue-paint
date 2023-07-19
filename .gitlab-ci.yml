@@ -34,6 +34,9 @@ artifacts:
       files:
         - pnpm-lock.yaml
         - package.json
+  only:
+    - main
+    - master
 
 deploy:
   image: docker/compose:latest
