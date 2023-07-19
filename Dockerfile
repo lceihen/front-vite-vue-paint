@@ -14,7 +14,7 @@ RUN pnpm install
 
 ADD . /code
 
-RUN npm run buildNoEslint
+RUN npm run build
 
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
