@@ -41,28 +41,31 @@ onMounted(() => {
 	canvasContext.value = (canvasRef.value as HTMLCanvasElement).getContext('2d')
 	// handleDrawCanvasTitle()
 
-	handleSaveCurrentCanvas()
+	// handleSaveCurrentCanvas()
 
 	window.addEventListener('resize', () => {
 		handleResetCanvas()
 		handleReloadCanvasView()
 	})
-
-	// const canvasParentRefContain = document.querySelector('#canvasParentRef')
-	// canvasParentRefContain?.addEventListener(
-	// 	'touchmove',
-	// 	function (e) {
-	// 		e.preventDefault()
-	// 	},
-	// 	{ passive: false }
-	// )
 })
 
 const handleInitCanvas = () => {
-	pageData.canvasWidth = 600
-	pageData.canvasHeight = 600
-	pageData.canvasWidth = window.innerWidth - 16 - 4
-	pageData.canvasHeight = window.innerHeight - 16 - 4
+	const initData = JSON.parse(localStorage.getItem('canvas'))
+	if (initData) {
+		for (let p in initData) {
+			pageData[p] = initData[p]
+		}
+
+		const image = new Image()
+		image.onload = () => {
+			canvasContext.value?.drawImage(image, 0, 0)
+		}
+		image.src = initData.historyViews[0]
+	} else {
+		pageData.canvasWidth = window.innerWidth - 16 - 4
+		pageData.canvasHeight = window.innerHeight - 16 - 4
+	}
+	handleSaveCurrentCanvas()
 }
 
 const handleResetCanvas = () => {
@@ -251,14 +254,19 @@ const handleCanvasStartWork = (event: any, param) => {
 	pageData.originY = yAxis
 }
 
+const _throttle = (fn, ...args) => {
+	if (!time) {
+		time = setTimeout(() => {
+			fn(...args)
+			time = null
+		}, 10)
+	}
+}
+
 const handleCanvasMoveWork = (event: Event) => {
 	if (!canvasWorking) return
 
 	const { xAxis, yAxis } = handleGetPointXY(event)
-
-	// 滑动效果保留坐标
-	lastOriginX = xAxis
-	lastOriginY = yAxis
 
 	// 	橡皮擦功能
 	if (pageData.cursorType === 'eraser') {
@@ -299,6 +307,17 @@ const handleCanvasMoveWork = (event: Event) => {
 		})
 		canvasContext.value.stroke()
 	}
+
+	// 滑动效果保留坐标
+	lastOriginX = xAxis
+	lastOriginY = yAxis
+
+	if (pageData.cursorType === 'grab' && lastOriginX && lastOriginY) {
+		const scrollX = xAxis - lastOriginX
+		const scrollY = yAxis - lastOriginY
+		console.log('scrollBy----', scrollX, scrollY, lastOriginX, lastOriginY)
+		canvasParentRef.value?.scrollBy(scrollX, scrollY)
+	}
 }
 
 const handleGetPointXY = (event: Event) => {
@@ -330,16 +349,23 @@ const handleCanvasFinishWork = (event, param) => {
 	if (leaveType !== 'out') {
 		handleSaveCurrentCanvas()
 	}
-
 	canvasWorking = false
-
 	canvasContext.value.beginPath()
 	pageData.originX = 0
 	pageData.originY = 0
 	lastOriginX = null
 	lastOriginY = null
+
+	const storageData = {
+		...pageData,
+		delHistoryViews: [],
+		historyViews: [canvasRef.value?.toDataURL()]
+	}
+
+	localStorage.setItem('canvas', JSON.stringify(storageData))
 }
 
+// 初始化回退的第一个数据
 const handleSaveCurrentCanvas = () => {
 	const currentCaptureViewData = canvasContext.value?.getImageData(
 		0,
