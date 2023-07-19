@@ -24,9 +24,9 @@ artifacts:
     - pnpm install
   artifacts:
     paths:
-      - ./
+      - dist/
     exclude:
-      - node_modules/*
+      - node_modules/
   cache:
     when: on_success
     key:
