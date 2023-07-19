@@ -27,14 +27,17 @@ stages:
 #   stage: build
 #   script:
 #     - docker-compose build
-#   artifacts:
-#     paths:
-#       - ./
-#       - docker-compose.yml
+# artifacts:
+#   paths:
+#     - ./
+#     - docker-compose.yml
 
 deploy:
   image: docker/compose:latest
   stage: deploy
+  artifacts:
+    paths:
+      - ./
   tags:
     - front-docker-1
   before_script:
