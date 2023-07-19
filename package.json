@@ -6,7 +6,6 @@
 	"scripts": {
 		"dev": "vite",
 		"build": " vite build",
-		"buildNoEslint": "vue-tsc && vite build",
 		"preview": "vite preview"
 	},
 	"dependencies": {
