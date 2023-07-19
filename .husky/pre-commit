@@ -3,4 +3,4 @@
 commit_hash="$GIT_COMMIT"
 commit_message=$(cat "$GIT_PARAMS")
 
-echo "--- ${commit_hash} ${commit_message}"
+echo '--- ${commit_hash} ${commit_message}'
