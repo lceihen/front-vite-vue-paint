@@ -3,3 +3,7 @@
 commit_message=$(git log -1 --pretty=format:"%s")
 
 echo "当前提交的信息：$commit_message"
+
+commit_hash=$(git rev-parse HEAD)
+
+echo "当前提交的哈希值：$commit_hash"
