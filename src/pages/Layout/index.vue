@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, onUnmounted } from 'vue'
 import { isMobileDevice } from '@/utils'
 
+// canvas是否处于pen工作
 let canvasWorking = false
 
+// 这里应该可以优化
 let lastOriginX = null
-
 let lastOriginY = null
 
-let time = null
-
+// 实时坐标
 let position = []
 
 const pageData = reactive({
@@ -44,9 +44,11 @@ onMounted(() => {
 	// handleSaveCurrentCanvas()
 
 	window.addEventListener('resize', () => {
-		handleResetCanvas()
+		handleBootstrapCanvas()
 		handleReloadCanvasView()
 	})
+
+	setInterval(handleSaveDataToLocastorage, 7000)
 })
 
 const handleInitCanvas = () => {
@@ -68,7 +70,7 @@ const handleInitCanvas = () => {
 	handleSaveCurrentCanvas()
 }
 
-const handleResetCanvas = () => {
+const handleBootstrapCanvas = () => {
 	const { canvasWidth: initCanvasWidth, canvasHeight: initCanvasHeight } =
 		pageData
 
@@ -86,6 +88,9 @@ const handleResetCanvas = () => {
 }
 
 const utilBtnList = [
+	{
+		key: 'reset'
+	},
 	{
 		key: 'enlarge'
 	},
@@ -124,7 +129,7 @@ const utilBtnList = [
 
 const handleClickBtn = (key: string) => {
 	let lastCursorType = pageData.cursorType
-	pageData.cursorType = ''
+	// pageData.cursorType = ''
 	switch (key) {
 		case 'pen':
 		case 'grab':
@@ -166,10 +171,20 @@ const handleClickBtn = (key: string) => {
 		case 'download':
 			handleCaptureCanvas()
 			break
+		case 'reset':
+			handleResetCanvas()
+			break
 		default:
 			break
 	}
 }
+
+const handleResetCanvas = () => {
+	handleClickBtn('clean')
+	localStorage.clear()
+	handleInitCanvas()
+}
+
 const handleCaptureCanvas = () => {
 	const viewData = canvasRef.value?.toDataURL('image/png')
 	const link = document.createElement('a')
@@ -254,15 +269,6 @@ const handleCanvasStartWork = (event: any, param) => {
 	pageData.originY = yAxis
 }
 
-const _throttle = (fn, ...args) => {
-	if (!time) {
-		time = setTimeout(() => {
-			fn(...args)
-			time = null
-		}, 10)
-	}
-}
-
 const handleCanvasMoveWork = (event: Event) => {
 	if (!canvasWorking) return
 
@@ -308,16 +314,14 @@ const handleCanvasMoveWork = (event: Event) => {
 		canvasContext.value.stroke()
 	}
 
-	// 滑动效果保留坐标
-	lastOriginX = xAxis
-	lastOriginY = yAxis
-
 	if (pageData.cursorType === 'grab' && lastOriginX && lastOriginY) {
 		const scrollX = xAxis - lastOriginX
 		const scrollY = yAxis - lastOriginY
-		console.log('scrollBy----', scrollX, scrollY, lastOriginX, lastOriginY)
-		canvasParentRef.value?.scrollBy(scrollX, scrollY)
+		canvasParentRef.value?.scrollBy(-scrollX, -scrollY)
 	}
+	// 滑动效果保留坐标
+	lastOriginX = xAxis
+	lastOriginY = yAxis
 }
 
 const handleGetPointXY = (event: Event) => {
@@ -355,7 +359,10 @@ const handleCanvasFinishWork = (event, param) => {
 	pageData.originY = 0
 	lastOriginX = null
 	lastOriginY = null
+}
 
+const handleSaveDataToLocastorage = () => {
+	console.log(`saveing at ${new Date()}`)
 	const storageData = {
 		...pageData,
 		delHistoryViews: [],
@@ -386,7 +393,8 @@ const handleSaveCurrentCanvas = () => {
 			:class="[
 				`cursor-${pageData.cursorType}`,
 				'border-8 grow overflow-scroll box-border w-screen h-screen  scrollbar-contain',
-				['pen', 'eraser'].includes(pageData.cursorType) ? 'touch-none' : ''
+				['pen', 'eraser'].includes(pageData.cursorType) ? 'touch-none' : '',
+				pageData.cursorType === 'grab' ? 'cursor-grab' : ''
 			]"
 			id="canvasParentRef"
 		>
