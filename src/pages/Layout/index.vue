@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
 import { isMobileDevice } from '@/utils'
-import { throttle } from 'lodash'
 
 let canvasWorking = false
 
@@ -10,6 +9,8 @@ let lastOriginX = null
 let lastOriginY = null
 
 let time = null
+
+let position = []
 
 const pageData = reactive({
 	cursorType: 'pen',
@@ -106,9 +107,6 @@ const utilBtnList = [
 
 	{
 		key: 'download'
-	},
-	{
-		key: 'unlimted-area'
 	}
 ]
 
@@ -240,6 +238,7 @@ const handleCanvasStartWork = (event: any, param) => {
 	if (originX === xAxis && originY === yAxis) return
 	canvasContext.value.moveTo(xAxis, yAxis)
 
+	position = []
 	pageData.originX = xAxis
 	pageData.originY = yAxis
 }
@@ -255,7 +254,7 @@ const _throttle = (fn, ...args) => {
 
 const handleCanvasMoveWork = (event: Event) => {
 	if (!canvasWorking) return
-	// canvasContext.value?.beginPath()
+
 	console.log('pageData.cursorType', pageData.cursorType)
 	const { xAxis, yAxis } = handleGetPointXY(event)
 
@@ -292,7 +291,31 @@ const handleCanvasMoveWork = (event: Event) => {
 		const { lineWidth, strokeStyle } = canvasConfig
 		canvasContext.value.lineWidth = lineWidth
 		canvasContext.value.strokeStyle = strokeStyle
-		canvasContext.value.lineTo(xAxis, yAxis)
+		// canvasContext.value.lineTo(xAxis, yAxis)
+		canvasContext.value?.beginPath()
+		if (position.length === 3) {
+			const { x: startX, y: startY } = position[0]
+			const { x: centerX, y: centerY } = position[1]
+			const { x: lastX, y: lastY } = position[2]
+
+			const moveOriginX = (startX + centerX) / 2
+			const moveOriginY = (startY + centerY) / 2
+			const x = (centerX + lastX) / 2
+			const y = (centerY + lastY) / 2
+
+			canvasContext.value.moveTo(moveOriginX, moveOriginY)
+			canvasContext.value.quadraticCurveTo(centerX, centerY, x, y)
+			position.shift()
+			console.log('3--------')
+		} else {
+			console.log('1-------')
+			canvasContext.value.moveTo(xAxis, yAxis)
+		}
+
+		position.push({
+			x: xAxis,
+			y: yAxis
+		})
 		canvasContext.value.stroke()
 	}
 }
@@ -387,7 +410,6 @@ const handleSaveCurrentCanvas = () => {
 				:height="pageData.canvasHeight"
 			>
 			</canvas>
-			<!-- @touchstart="(e) => handleCanvasStartWork(e, { startType: 'touch' })" -->
 		</body>
 		<aside
 			:class="[
