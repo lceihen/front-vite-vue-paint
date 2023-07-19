@@ -3,7 +3,7 @@ commit_message=$(git log -1 --pretty=format:"%s")
 commit_hash=$(git rev-parse --short HEAD)
 
 handleWriteLog() {
-    echo "$commit_hash $commit_message" >>/version
+    "$commit_hash $commit_message" >>/version
     return 1
 }
 
