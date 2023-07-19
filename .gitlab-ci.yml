@@ -38,6 +38,7 @@ deploy:
   artifacts:
     paths:
       - ./
+
   tags:
     - front-docker-1
   before_script:
