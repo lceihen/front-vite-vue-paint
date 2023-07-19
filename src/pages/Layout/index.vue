@@ -383,7 +383,7 @@ const handleSaveCurrentCanvas = () => {
 	pageData.historyViews.push(currentCaptureViewData)
 }
 </script>
-
+<!-- 1 -->
 <template>
 	<div
 		class="flex flex-nowrap items-center justify-center scrollbar-contain relative overflow-scroll scroll-p-0 p-0"
