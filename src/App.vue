@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-console.log(2)
+console.log(3)
 </script>
 <!-- 2245-->
 <template>
