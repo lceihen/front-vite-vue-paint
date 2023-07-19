@@ -2,6 +2,6 @@
 
 commit_message=$(git log -1 --pretty=format:"%s")
 
-commit_hash=$(git rev-parse HEAD)
+commit_hash=$(git rev-parse --short HEAD)
 
 echo "$commit_hash $commit_message"
