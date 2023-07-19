@@ -8,7 +8,7 @@ handleWriteLog() {
 }
 
 if handleWriteLog; then
-    echo "命令执行成功"
+    echo ""
 else
     echo "命令执行失败，进行错误处理"
 fi
