@@ -47,6 +47,15 @@ onMounted(() => {
 		handleResetCanvas()
 		handleReloadCanvasView()
 	})
+
+	// const canvasParentRefContain = document.querySelector('#canvasParentRef')
+	// canvasParentRefContain?.addEventListener(
+	// 	'touchmove',
+	// 	function (e) {
+	// 		e.preventDefault()
+	// 	},
+	// 	{ passive: false }
+	// )
 })
 
 const handleInitCanvas = () => {
@@ -68,7 +77,7 @@ const handleResetCanvas = () => {
 		initCanvasHeight > window.innerHeight - 16 - 4
 			? initCanvasHeight
 			: window.innerHeight - 16 - 4
-	console.log('reset width and height', width, height)
+
 	pageData.canvasWidth = width
 	pageData.canvasHeight = height
 }
@@ -148,7 +157,7 @@ const handleClickBtn = (key: string) => {
 			break
 		case 'enlarge':
 			handleEnlargeCanvas()
-			pageData.cursorType = lastCursorType
+			pageData.cursorType = 'grab'
 			// handleDrawCanvasTitle()
 			break
 		case 'download':
@@ -179,7 +188,7 @@ const handleEnlargeCanvas = () => {
 	const offsetX = (newCanvasWidth - initCanvasWidth) / 2
 
 	const offsetY = (newCanvasWidth - initCanvasHeight) / 2
-	console.log('reset width and height', newCanvasWidth, newCanvasHeight)
+
 	handleReloadCanvasView({
 		offsetX: offsetX > 0 ? offsetX : 0,
 		offsetY: offsetY > 0 ? offsetY : 0
@@ -226,7 +235,6 @@ const handleUndoCanvas = () => {
 
 const handleToolsVisible = () => {
 	pageData.toolVisible = !pageData.toolVisible
-	console.log('handleToolsVisible-----', !pageData.toolVisible)
 }
 
 const handleCanvasStartWork = (event: any, param) => {
@@ -243,35 +251,10 @@ const handleCanvasStartWork = (event: any, param) => {
 	pageData.originY = yAxis
 }
 
-const _throttle = (fn, ...args) => {
-	if (!time) {
-		time = setTimeout(() => {
-			fn(...args)
-			time = null
-		}, 10)
-	}
-}
-
 const handleCanvasMoveWork = (event: Event) => {
 	if (!canvasWorking) return
 
-	console.log('pageData.cursorType', pageData.cursorType)
 	const { xAxis, yAxis } = handleGetPointXY(event)
-
-	if (pageData.cursorType === 'grab' && lastOriginX && lastOriginY) {
-		const scrollX = xAxis - lastOriginX
-		const scrollY = yAxis - lastOriginY
-
-		console.log('scrollBy----', scrollX, scrollY, lastOriginX, lastOriginY)
-
-		_throttle(
-			() => canvasParentRef.value?.scrollBy(scrollX, scrollY),
-
-			canvasParentRef,
-			scrollX,
-			scrollY
-		)
-	}
 
 	// 滑动效果保留坐标
 	lastOriginX = xAxis
@@ -306,9 +289,7 @@ const handleCanvasMoveWork = (event: Event) => {
 			canvasContext.value.moveTo(moveOriginX, moveOriginY)
 			canvasContext.value.quadraticCurveTo(centerX, centerY, x, y)
 			position.shift()
-			console.log('3--------')
 		} else {
-			console.log('1-------')
 			canvasContext.value.moveTo(xAxis, yAxis)
 		}
 
@@ -378,8 +359,10 @@ const handleSaveCurrentCanvas = () => {
 			ref="canvasParentRef"
 			:class="[
 				`cursor-${pageData.cursorType}`,
-				'border-8 grow overflow-scroll box-border w-screen h-screen  scrollbar-contain'
+				'border-8 grow overflow-scroll box-border w-screen h-screen  scrollbar-contain',
+				['pen', 'eraser'].includes(pageData.cursorType) ? 'touch-none' : ''
 			]"
+			id="canvasParentRef"
 		>
 			<canvas
 				ref="canvasRef"
