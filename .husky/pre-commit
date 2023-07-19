@@ -5,7 +5,8 @@ commit_hash=$(git rev-parse --short HEAD)
 custom_format_date=$(date +"%Y年%m月%d日%H时%M分%S秒")
 
 handleWriteLog() {
-    echo "$commit_hash $commit_message $custom_format_date" >>./version
+    # echo "$commit_hash $commit_message $custom_format_date" >>./version
+    sed -i "1i\\"$commit_hash $commit_message $custom_format_date"" ./version
     git add ./version
     return 0
 }
