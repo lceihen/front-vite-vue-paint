@@ -25,6 +25,8 @@ artifacts:
   artifacts:
     paths:
       - ./
+    exclude:
+      - node_modules/*
   cache:
     when: on_success
     key:
