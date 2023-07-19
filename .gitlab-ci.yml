@@ -1,25 +1,7 @@
 image: node:16.3.0
 
-# stages:
-#  - deploy
-
-# job_deploy:
-#   stage: deploy
-#   image: docker
-#   tags:
-#     - front
-#   script:
-#     - echo 'deploy'
-#     - docker build -t container .
-#     - if [ $(docker ps -aq --filter name=$CI_PROJECT_NAME) ]; then docker rm -f $CI_PROJECT_NAME;fi
-#     - docker run  -p 8086:80 -d  --name $CI_PROJECT_NAME container
-
-# - build
-# dependencies:
-#   - build
-#1
-
 stages:
+  - artifacts
   - deploy
 
 # build:
@@ -27,14 +9,40 @@ stages:
 #   stage: build
 #   script:
 #     - docker-compose build
-#   artifacts:
-#     paths:
-#       - ./
-#       - docker-compose.yml
+# artifacts:
+#   paths:
+#     - ./
+#     - docker-compose.yml
+
+artifacts:
+  stage: artifacts
+  image: node:16.17.0
+  script:
+    - npm config set registry http://registry.npm.taobao.org/
+    - npm install -g pnpm
+    - pnpm config set registry https://registry.npm.taobao.org/
+    - pnpm install
+    - pnpm run build
+  artifacts:
+    paths:
+      - dist/
+    exclude:
+      - node_modules/
+  cache:
+    when: on_success
+    key:
+      files:
+        - pnpm-lock.yaml
+        - package.json
+  only:
+    - main
+    - master
 
 deploy:
   image: docker/compose:latest
   stage: deploy
+  tags:
+    - front-docker-1
   before_script:
     - if [[ "$CI_COMMIT_REF_NAME" == "master" ]] || [[ "$CI_COMMIT_REF_NAME" == "main" ]]; then  echo "SELF_DOMAIN_NAME=''" >> .env; else echo "SELF_DOMAIN_NAME=-$CI_COMMIT_REF_NAME" >> .env;  fi;
     - ls -las
@@ -43,3 +51,6 @@ deploy:
     - cat docker-compose-updated.yaml
   script:
     - docker-compose -f docker-compose-updated.yaml up -d --build
+  environment:
+    name: canvas
+    url: https://canvas.abclive.cloud

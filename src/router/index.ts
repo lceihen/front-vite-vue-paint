@@ -8,7 +8,7 @@ import { getToken, getUserInfo } from '@/api'
 // const Layout = () => import('@/pages/Layout/index.vue')
 
 const routes = [
-	{ path: '/', name: 'orderFill', component: Layout },
+	{ path: '/', name: 'layout', component: Layout },
 
 	{ path: '/error', name: 'error', component: Error }
 ]
