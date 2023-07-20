@@ -15,7 +15,6 @@ handleWriteLog() {
     echo "$log" >"${file_name}.tmp"
     cat "$file_name" >>"$file_name.tmp"
     mv "$file_name.tmp" "$file_name"
-    # echo "$commit_hash $commit_message $custom_format_date" >>$file_name
     if [ "$line_count" -ge 5 ]; then
         head -n 5 "$file_name" >"$file_name.tmp"
         mv "$file_name.tmp" "$file_name"
