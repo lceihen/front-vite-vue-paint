@@ -20,7 +20,7 @@ handleWriteLog() {
         head -n 5 "$file_name" >"$file_name.tmp"
         mv "$file_name.tmp" "$file_name"
     fi
-    # git add ./version
+    git add ./version
     return 0
 }
 
