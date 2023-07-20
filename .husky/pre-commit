@@ -1,20 +1,17 @@
-# commit_message=$(git log -1 --pretty=format:"%s")
+commit_message=$(git log -1 --pretty=format:"%s")
 
-# commit_hash=$(git rev-parse --short HEAD)
+commit_hash=$(git rev-parse --short HEAD)
 
-# custom_format_date=$(date +"%Y年%m月%d日%H时%M分%S秒")
+custom_format_date=$(date +"%Y年%m月%d日%H时%M分%S秒")
 
-# filePath = './version'
+handleWriteLog() {
+    echo "$commit_hash $commit_message $custom_format_date" >>./version
+    # git add ./version
+    return 0
+}
 
-# handleWriteLog() {
-#     # echo "$commit_hash $commit_message $custom_format_date" >>./version
-#     sed -i "1i\\$commit_hash $commit_message $custom_format_date" $filePath
-#     git add ./version
-#     return 0
-# }
-
-# if handleWriteLog; then
-#     echo ""
-# else
-#     echo "命令执行失败，进行错误处理"
-# fi
+if handleWriteLog; then
+    echo ""
+else
+    echo "命令执行失败，进行错误处理"
+fi

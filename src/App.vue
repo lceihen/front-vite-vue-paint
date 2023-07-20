@@ -2,7 +2,7 @@
 import { RouterView } from 'vue-router'
 console.log(3)
 </script>
-<!-- 2245o2slive-->
+<!-- 2245o2sliv4e-->
 <template>
 	<RouterView />
 </template>
