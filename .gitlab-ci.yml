@@ -54,3 +54,4 @@ deploy:
   environment:
     name: canvas
     url: https://canvas.abclive.cloud
+  interruptible: true
