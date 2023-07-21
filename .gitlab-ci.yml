@@ -10,6 +10,7 @@ makeLogFile:
   script:
     - chmod 777 ./depoly/version.sh
     - . ./depoly/version.sh
+  interruptible: true
 
 artifacts:
   stage: artifacts
@@ -34,6 +35,7 @@ artifacts:
   only:
     - main
     - master
+  interruptible: true
 
 deploy:
   image: docker/compose:latest
