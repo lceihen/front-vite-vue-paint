@@ -27,7 +27,7 @@ handleWriteLog() {
 }
 
 if handleWriteLog; then
-    echo ""
+    git add ./public/version
 else
     echo "命令执行失败，进行错误处理"
     exit 1
