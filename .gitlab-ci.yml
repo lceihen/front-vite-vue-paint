@@ -4,16 +4,6 @@ stages:
   - artifacts
   - deploy
 
-# build:
-#   image: docker/compose:latest
-#   stage: build
-#   script:
-#     - docker-compose build
-# artifacts:
-#   paths:
-#     - ./
-#     - docker-compose.yml
-
 artifacts:
   stage: artifacts
   image: node:16.17.0

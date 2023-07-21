@@ -380,6 +380,7 @@ const handleSaveCurrentCanvas = () => {
 		pageData.canvasWidth,
 		pageData.canvasHeight
 	)
+	if (currentCaptureViewData === undefined || !currentCaptureViewData) return
 	pageData.historyViews.push(currentCaptureViewData)
 }
 </script>
