@@ -4,11 +4,11 @@ commit_hash=$(git rev-parse --short HEAD)
 
 custom_format_date=$(date +"%Y年%m月%d日%H时%M分%S秒")
 
-file_name='version'
+file_name='../public/version'
 
 line_count=$(wc -l <"$file_name")
 
-log="$commit_hash $commit_message $custom_format_date"
+log="$commit_hash $commit_message $custom_format_date |"
 
 echo $log
 
@@ -21,7 +21,6 @@ handleWriteLog() {
         head -n 5 "$file_name" >"$file_name.tmp"
         mv "$file_name.tmp" "$file_name"
     fi
-    git add ./version
     return 0
 }
 
