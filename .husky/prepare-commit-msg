@@ -10,7 +10,7 @@ file_name='public/version'
 
 line_count=$(wc -l <"$file_name")
 
-log="$commit_hash $commit_msg_file $custom_format_date |"
+log="$commit_hash $commit_message $custom_format_date |"
 
 echo $log
 
