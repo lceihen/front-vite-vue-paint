@@ -1,6 +1,6 @@
 commit_msg_file=$1
 
-commit_message=$(git log --pretty=format:"%s")
+commit_message=$(cat $commit_msg_file)
 
 commit_hash=$(git rev-parse --short HEAD)
 
