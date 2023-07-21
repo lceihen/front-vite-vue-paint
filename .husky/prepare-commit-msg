@@ -32,5 +32,3 @@ else
     echo "命令执行失败，进行错误处理"
     exit 1
 fi
-
-git add ./public/version
