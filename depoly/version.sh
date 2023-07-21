@@ -1,4 +1,4 @@
-file_name='../public/version'
+file_name='/public/version'
 
 pwd
 
