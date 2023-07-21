@@ -15,7 +15,7 @@ fetch('../version')
 	.then((data) => {
 		const res = data.split(' |')
 		res.forEach((logItem) => {
-			const [hash, title, date] = logItem.replace('\n', '').split(' ')
+			const [hash, title, date] = logItem.replace('\n', '').split('**')
 			if (!hash) return
 			console.log(
 				`%c ${hash} %c ${title} %c${date}`,

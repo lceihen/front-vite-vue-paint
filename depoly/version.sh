@@ -1,16 +1,10 @@
-commit_message=$(git log -1 --pretty=format:"%s")
-
-commit_hash=$(git rev-parse --short HEAD)
-
-custom_format_date=$(date +"%Y年%m月%d日%H时%M分%S秒")
-
 touch '../public/version'
 
 file_name='../public/version'
 
 line_count=$(wc -l <"$file_name")
 
-log="$commit_hash $commit_message $custom_format_date |"
+log="$(git log -5 --pretty=format:"%h**%s**%cd |" --date=format:"%Y年%m月%d日%H时%M分%S秒")"
 
 echo $log
 
