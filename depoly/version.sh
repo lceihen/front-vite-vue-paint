@@ -1,5 +1,9 @@
 file_name='../public/version'
 
+pwd
+
+ls
+
 touch $file_name
 
 line_count=$(wc -l <"$file_name")
