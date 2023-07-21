@@ -8,6 +8,8 @@ import App from './App.vue'
 
 // new VConsole()
 
+// 1
+
 createApp(App).use(RouterConfig).mount('#app')
 
 fetch('version')
