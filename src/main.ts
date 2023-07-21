@@ -10,7 +10,7 @@ import App from './App.vue'
 
 createApp(App).use(RouterConfig).mount('#app')
 
-fetch('../version')
+fetch('version')
 	.then((response) => response.text())
 	.then((data) => {
 		const res = data.split(' |')
