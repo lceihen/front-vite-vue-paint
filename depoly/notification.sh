@@ -24,7 +24,7 @@ context="{
           [
             {
               \"tag\": \"text\",
-              \"text\": \"发布分支：$CI_COMMIT_REF_NAME\"
+              \"text\": \"发布分支：$CI_COMMIT_REF_NAME\n\"
             },
             {
               \"tag\": \"text\",
@@ -32,7 +32,7 @@ context="{
             },
                {
               \"tag\": \"text\",
-              \"text\": \"发布信息：$no_spaces_message\"
+              \"text\": \"发布信息：$no_spaces_message\n\"
             },
             {
               \"tag\": \"a\",
