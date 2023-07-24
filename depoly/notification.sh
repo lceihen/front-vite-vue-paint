@@ -27,7 +27,7 @@ context="{
             },
                {
               \"tag\": \"text\",
-              \"text\": \"发布信息：$MESSAGE\"
+              \"text\": \"发布信息：test: CICD1\"
             },
             {
               \"tag\": \"a\",
