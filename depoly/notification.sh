@@ -24,6 +24,10 @@ context="{
               \"tag\": \"text\",
               \"text\": \"发布时间：$current_datetime\"
             },
+               {
+              \"tag\": \"text\",
+              \"text\": \"发布时间：$CI_COMMIT_MESSAGE\"
+            },
             {
               \"tag\": \"a\",
               \"text\": \"发布地址\",
