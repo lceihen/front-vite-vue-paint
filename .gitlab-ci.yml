@@ -1,9 +1,10 @@
 image: node:16.3.0
 
 stages:
-  - makeLogFile
-  - artifacts
-  - deploy
+  # - makeLogFile
+  # - artifacts
+  # - deploy
+  - notification
 
 makeLogFile:
   stage: makeLogFile
@@ -50,9 +51,17 @@ deploy:
     - cat docker-compose-updated.yaml
   script:
     - docker-compose -f docker-compose-updated.yaml up -d --build
-    - curl --version
-    - . ./depoly/notification.sh
+    # - curl --version
+    # - . ./depoly/notification.sh
   environment:
     name: canvas
     url: https://canvas.abclive.cloud
   interruptible: true
+
+notification:
+  stage: notification
+  tags:
+    - front-docker-1
+  script:
+    - curl --version
+    - . ./depoly/notification.sh
