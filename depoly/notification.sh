@@ -9,6 +9,9 @@ href="canvas-${CI_COMMIT_REF_NAME}.abclive.cloud"
 
 echo $MESSAGE
 
+length=$(expr length "$MESSAGE")
+echo "Length: $length"
+
 echo $href
 
 context="{
