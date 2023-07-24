@@ -27,7 +27,7 @@ context="{
             },
                {
               \"tag\": \"text\",
-              \"text\": \"发布信息：\"
+              \"text\": \"发布信息：$CI_COMMIT_SHA\"
             },
             {
               \"tag\": \"a\",
