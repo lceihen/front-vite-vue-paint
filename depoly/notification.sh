@@ -12,17 +12,21 @@ context="{
             {
               \"tag\": \"text\",
               \"text\": \"发布分支：$CI_COMMIT_REF_NAME\"
-            },
+            }
+          ],
+            [
             {
               \"tag\": \"text\",
               \"text\": \"发布时间：$current_datetime\"
             },
+          ],
+            [
             {
               \"tag\": \"a\",
               \"text\": \"发布地址\",
               \"href\": \"$href\"
             }
-          ]
+          ],
         ]
       }
     }
