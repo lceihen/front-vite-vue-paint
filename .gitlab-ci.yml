@@ -1,9 +1,6 @@
 image: node:16.3.0
 
 stages:
-  # - makeLogFile
-  # - artifacts
-  # - deploy
   - notification
 
 makeLogFile:
