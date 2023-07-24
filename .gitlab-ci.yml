@@ -61,4 +61,4 @@ notification:
   tags:
     - shell-1
   script:
-    - curl "http://baidu.com"
+    - . ./depoly/notification.sh

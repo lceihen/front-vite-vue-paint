@@ -1,26 +1,12 @@
 WEB_HOOK_URL="https://open.feishu.cn/open-apis/bot/v2/hook/f0b1358b-38ce-4f01-b629-64c0d2fbe854"
+current_datetime=$(date '+%Y-%m-%d %H:%M:%S')
 curl -X POST \
     $WEB_HOOK_URL \
     -H 'Content-Type: application/json' \
     -d '{
-    "msg_type": "post",
+    "msg_type": "text",
     "content": {
-        "post": {
-            "zh_cn": {
-                "title": "CICD发布",
-                "content": [
-                    [
-                        {
-                            "tag": "text",
-                            "text": "'$CI_COMMIT_REF_NAME'",
-                            "url": "'canvas${SELF_DOMAIN_NAME}.abclive.cloud'"
-                        }
-                    ],
-                    [
-
-                    ]
-                ]
-            }
-        }
+        "构建的分支":"'$CI_COMMIT_REF_NAME'",
+        "构建时间":"'$current_datetime'"
     }
 }'
