@@ -6,7 +6,7 @@ context="{
   \"content\": {
     \"post\": {
       \"zh-CN\": {
-        \"title\": \"富文本消息测试！\",
+        \"title\": \"CICD信息\",
         \"content\": [
           [
             {
