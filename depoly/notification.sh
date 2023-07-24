@@ -6,6 +6,6 @@ curl -X POST \
     -d '{
     "msg_type": "text",
     "content": {
-        "text":"'$current_datetime'：'$CI_COMMIT_REF_NAME','canvas${SELF_DOMAIN_NAME}.abclive.cloud'",
+        "text":"'$current_datetime'：'$CI_COMMIT_REF_NAME'.'canvas${SELF_DOMAIN_NAME}.abclive.cloud'",
     }
 }'
