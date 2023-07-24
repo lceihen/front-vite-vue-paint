@@ -3,6 +3,8 @@ current_datetime=$(date '+%Y-%m-%d %H:%M:%S')
 SELF_DOMAIN_NAME=''
 MESSAGE="$CI_COMMIT_MESSAGE"
 
+no_spaces_message=${MESSAGE// /}
+
 if [[ "$CI_COMMIT_REF_NAME" == "master" ]] || [[ "$CI_COMMIT_REF_NAME" == "main" ]]; then SELF_DOMAIN_NAME=''; else SELF_DOMAIN_NAME=-$CI_COMMIT_REF_NAME; fi
 
 href="canvas-${CI_COMMIT_REF_NAME}.abclive.cloud"
@@ -32,7 +34,7 @@ context="{
             },
                {
               \"tag\": \"text\",
-              \"text\": \"$MESSAGE\"
+              \"text\": \"$no_spaces_message\"
             },
             {
               \"tag\": \"a\",
