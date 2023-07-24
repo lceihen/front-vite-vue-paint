@@ -6,9 +6,6 @@ stages:
   - deploy
   - notification
 
-variables:
-  WEB_HOOK_URL: "https://open.feishu.cn/open-apis/bot/v2/hook/f0b1358b-38ce-4f01-b629-64c0d2fbe854"
-
 makeLogFile:
   stage: makeLogFile
   script:
@@ -62,7 +59,4 @@ deploy:
 notification:
   stage: notification
   script:
-    - |
-      curl -X POST -H "Content-Type: application/json" -d '{
-        "content": "Message: $MESSAGE\nCommit Message: $COMMIT_MESSAGE\nCommit SHA: $COMMIT_SHA"
-      }' $WEB_HOOK_URL
+    - . ./depoly/notification.sh
