@@ -14,7 +14,7 @@ context="{
   \"content\": {
     \"post\": {
       \"zh-CN\": {
-        \"title\": \"CICD信息$MESSAGE\",
+        \"title\": \"CICD信息\",
         \"content\": [
           [
             {
