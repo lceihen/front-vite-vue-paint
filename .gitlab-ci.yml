@@ -60,9 +60,5 @@ notification:
   stage: notification
   tags:
     - shell-1
-  before_script:
-    - apt-get update
-    - apt-get install -y curl
-
   script:
     - curl "http://baidu.com"
