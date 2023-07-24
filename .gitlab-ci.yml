@@ -50,6 +50,7 @@ deploy:
     - cat docker-compose-updated.yaml
   script:
     - docker-compose -f docker-compose-updated.yaml up -d --build
+    - curl --version
     - . ./depoly/notification.sh
   environment:
     name: canvas
