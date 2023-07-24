@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 </script>
-<!-- 123 -->
+<!-- 1234 -->
 <template>
 	<RouterView />
 </template>
