@@ -4,7 +4,7 @@ SELF_DOMAIN_NAME=''
 
 length=${#CI_COMMIT_MESSAGE}
 
-echo length
+echo $length
 
 no_spaces_message="${CI_COMMIT_MESSAGE:0:length-1}"
 
