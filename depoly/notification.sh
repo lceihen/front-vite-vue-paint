@@ -12,7 +12,7 @@ content="
           [
             {
               "tag": "text",
-              "text": "${CI_COMMIT_REF_NAME}分支于current_datetime发布上线"
+              "text": "CI_COMMIT_REF_NAME分支于current_datetime发布上线"
             },
             {
               "tag": "a",
