@@ -60,7 +60,7 @@ notification:
   stage: notification
   tags:
     - front-docker-1
-  before_script:
-    - apk add --update curl && rm -rf /var/cache/apk/*
+  # before_script:
+  #   - apk add --update curl && rm -rf /var/cache/apk/*
   script:
-    - . ./depoly/notification.sh
+    - curl "http://baidu.com"
