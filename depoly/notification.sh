@@ -4,16 +4,13 @@ SELF_DOMAIN_NAME=''
 
 length=${#CI_COMMIT_MESSAGE}
 
+echo length
+
 no_spaces_message="${CI_COMMIT_MESSAGE:0:length-1}"
 
 if [[ "$CI_COMMIT_REF_NAME" == "master" ]] || [[ "$CI_COMMIT_REF_NAME" == "main" ]]; then SELF_DOMAIN_NAME=''; else SELF_DOMAIN_NAME=-$CI_COMMIT_REF_NAME; fi
 
 href="canvas-${CI_COMMIT_REF_NAME}.abclive.cloud"
-
-echo $MESSAGE
-
-length=$(expr length "$MESSAGE")
-echo "Length: $length"
 
 echo $href
 
