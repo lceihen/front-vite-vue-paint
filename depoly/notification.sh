@@ -34,7 +34,7 @@ href="${CI_COMMIT_REF_NAME}-canvas${SELF_DOMAIN_NAME}.abclive.cloud"
 curl -X POST \
     $WEB_HOOK_URL \
     -H 'Content-Type: application/json' \
-    -d json_string="{
+    -d "{
   \"msg_type\": \"post\",
   \"content\": {
     \"post\": {
