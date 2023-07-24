@@ -11,7 +11,7 @@ context="{
           [
             {
               \"tag\": \"text\",
-              \"text\": \"$current_datetime\"
+              \"text\": 发布时间：\"$current_datetime\"
             },
             {
               \"tag\": \"a\",
