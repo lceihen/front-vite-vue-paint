@@ -14,7 +14,7 @@ context="{
   \"content\": {
     \"post\": {
       \"zh-CN\": {
-        \"title\": \"CICD信息\",
+        \"title\": \"CICD信息$MESSAGE\",
         \"content\": [
           [
             {
@@ -27,7 +27,7 @@ context="{
             },
                {
               \"tag\": \"text\",
-              \"text\": \"发布信息：$MESSAGE\"
+              \"text\": \"发布信息：\"
             },
             {
               \"tag\": \"a\",
