@@ -28,7 +28,7 @@ context="{
             },
             {
               \"tag\": \"text\",
-              \"text\": \"发布时间：$current_datetime\"
+              \"text\": \"发布时间：$current_datetime\n\"
             },
                {
               \"tag\": \"text\",
