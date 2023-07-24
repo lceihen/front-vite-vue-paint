@@ -24,7 +24,7 @@ context="{
           [
             {
               \"tag\": \"text\",
-              \"text\": \"发布分支：$CI_PROJECT_NAME\n\"
+              \"text\": \"发布仓库：$CI_PROJECT_NAME\n\"
             },
             {
               \"tag\": \"text\",
