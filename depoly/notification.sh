@@ -32,7 +32,7 @@ context="{
             },
                {
               \"tag\": \"text\",
-              \"text\": \"$no_spaces_message\"
+              \"text\": \"发布信息：$no_spaces_message\"
             },
             {
               \"tag\": \"a\",
