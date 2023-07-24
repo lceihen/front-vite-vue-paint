@@ -20,6 +20,10 @@ context="{
               \"tag\": \"text\",
               \"text\": \"发布分支：$CI_COMMIT_REF_NAME\"
             },
+                       {
+              \"tag\": \"text\",
+              \"text\": \"提交的信息是：$CI_COMMIT_MESSAGE\"
+            },
             {
               \"tag\": \"text\",
               \"text\": \"发布时间：$current_datetime\"
