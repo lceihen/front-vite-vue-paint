@@ -26,7 +26,7 @@ context="{
               \"text\": \"发布时间：$current_datetime\"
             },
                {
-              \"tag\": \"text\",
+              \"tag\": \"a\",
               \"text\": \"发布信息$CI_COMMIT_MESSAGE\"
             },
             {
