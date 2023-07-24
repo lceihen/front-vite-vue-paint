@@ -44,7 +44,7 @@ curl -X POST \
           [
             {
               "tag": "text",
-              "text": '"$current_datetime"'"
+              "text": "current_datetime"
             },
             {
               "tag": "a",
