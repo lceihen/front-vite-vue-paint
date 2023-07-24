@@ -27,7 +27,7 @@ context="{
             },
                {
               \"tag\": \"text\",
-              \"text\": \"发布信息：$CI_COMMIT_MESSAGE\"
+              \"text\": \"发布信息$CI_COMMIT_MESSAGE\"
             },
             {
               \"tag\": \"a\",
