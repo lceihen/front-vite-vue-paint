@@ -24,6 +24,10 @@ context="{
           [
             {
               \"tag\": \"text\",
+              \"text\": \"发布分支：$CI_PROJECT_NAME\n\"
+            },
+            {
+              \"tag\": \"text\",
               \"text\": \"发布分支：$CI_COMMIT_REF_NAME\n\"
             },
             {
@@ -36,7 +40,7 @@ context="{
             },
             {
               \"tag\": \"a\",
-              \"text\": \"发布地址:$href\",
+              \"text\": \"发布地址：$href\",
               \"href\": \"$href\"
             }
           ]
