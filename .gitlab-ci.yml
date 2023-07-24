@@ -60,8 +60,7 @@ notification:
   stage: notification
   tags:
     - front-docker-1
+  before_script:
+    - apk add --update curl && rm -rf /var/cache/apk/*
   script:
-    - rpm -qa | grep curl
-    - rpm -qa | grep yum
-    - yum install curl -y
     - . ./depoly/notification.sh
