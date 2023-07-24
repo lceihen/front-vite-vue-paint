@@ -39,6 +39,8 @@ context="{
     }
   }
 }"
+
+echo $context
 curl -X POST \
     $WEB_HOOK_URL \
     -H 'Content-Type: application/json' \
