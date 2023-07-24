@@ -11,7 +11,7 @@ context="{
           [
             {
               \"tag\": \"text\",
-              \"text\": \"发布分支：$current_datetime\"
+              \"text\": \"发布分支：$CI_COMMIT_REF_NAME\"
             },
             {
               \"tag\": \"text\",
@@ -19,8 +19,8 @@ context="{
             },
             {
               \"tag\": \"a\",
-              \"text\": \"点击查看\",
-              \"href\": \"https://sspai.com/u/100gle/updates\"
+              \"text\": \"发布地址\",
+              \"href\": \"$href\"
             }
           ]
         ]
