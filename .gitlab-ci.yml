@@ -59,8 +59,10 @@ stages:
 notification:
   stage: notification
   tags:
-    - front-docker-1
-  # before_script:
-  #   - apk add --update curl && rm -rf /var/cache/apk/*
+    - shell-1
+  before_script:
+    - apt-get update
+    - apt-get install -y curl
+
   script:
     - curl "http://baidu.com"
