@@ -29,7 +29,7 @@ context="{
             },
                {
               \"tag\": \"text\",
-              \"text\": \"$CI_COMMIT_MESSAGE\"
+              \"text\": \"$MESSAGE\"
             },
             {
               \"tag\": \"a\",
