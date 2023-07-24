@@ -61,5 +61,6 @@ notification:
   tags:
     - front-docker-1
   script:
+    - yum install curl -y
     - curl --version
     - . ./depoly/notification.sh
