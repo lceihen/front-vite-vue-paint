@@ -34,26 +34,26 @@ href="${CI_COMMIT_REF_NAME}-canvas${SELF_DOMAIN_NAME}.abclive.cloud"
 curl -X POST \
     $WEB_HOOK_URL \
     -H 'Content-Type: application/json' \
-    -d '{
-  "msg_type": "post",
-  "content": {
-    "post": {
-      "zh-CN": {
-        "title": "富文本消息测试！",
-        "content": [
+    -d json_string="{
+  \"msg_type\": \"post\",
+  \"content\": {
+    \"post\": {
+      \"zh-CN\": {
+        \"title\": \"富文本消息测试！\",
+        \"content\": [
           [
             {
-              "tag": "text",
-              "text": "current_datetime"
+              \"tag\": \"text\",
+              \"text\": \"$current_datetime\"
             },
             {
-              "tag": "a",
-              "text": "点击查看",
-              "href": "https://sspai.com/u/100gle/updates"
+              \"tag\": \"a\",
+              \"text\": \"点击查看\",
+              \"href\": \"https://sspai.com/u/100gle/updates\"
             }
           ]
         ]
       }
     }
   }
-}'
+}"
