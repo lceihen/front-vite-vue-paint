@@ -7,6 +7,8 @@ if [[ "$CI_COMMIT_REF_NAME" == "master" ]] || [[ "$CI_COMMIT_REF_NAME" == "main"
 
 href="canvas-${CI_COMMIT_REF_NAME}.abclive.cloud"
 
+echo $MESSAGE
+
 echo $href
 
 context="{
