@@ -7,12 +7,13 @@ curl -X POST \
     "content": {
         "post": {
             "zh_cn": {
-                "title": "WGCLOUD告警",
+                "title": "CICD发布",
                 "content": [
                     [
                         {
                             "tag": "text",
-                            "text": "'$content'"
+                            "text": "'$CI_COMMIT_REF_NAME'",
+                            "url": "'canvas${SELF_DOMAIN_NAME}.abclive.cloud'"
                         }
                     ],
                     [
