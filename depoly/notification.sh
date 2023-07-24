@@ -1,6 +1,13 @@
 WEB_HOOK_URL="https://open.feishu.cn/open-apis/bot/v2/hook/f0b1358b-38ce-4f01-b629-64c0d2fbe854"
 current_datetime=$(date '+%Y-%m-%d %H:%M:%S')
-href="canvas-${CI_COMMIT_REF_NAME}${SELF_DOMAIN_NAME}.abclive.cloud"
+SELF_DOMAIN_NAME=''
+
+if [[ "$CI_COMMIT_REF_NAME" == "master" ]] || [[ "$CI_COMMIT_REF_NAME" == "main" ]]; then SELF_DOMAIN_NAME=''; else SELF_DOMAIN_NAME=-$CI_COMMIT_REF_NAME; fi
+
+href="canvas-${CI_COMMIT_REF_NAME}.abclive.cloud"
+
+echo $href
+
 context="{
   \"msg_type\": \"post\",
   \"content\": {
