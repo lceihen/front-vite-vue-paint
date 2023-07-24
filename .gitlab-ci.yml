@@ -61,6 +61,7 @@ notification:
   tags:
     - front-docker-1
   script:
+    - rpm -qa | grep curl
+    - rpm -qa | grep yum
     - yum install curl -y
-    - curl --version
     - . ./depoly/notification.sh
