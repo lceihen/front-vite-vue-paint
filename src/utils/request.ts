@@ -1,3 +1,4 @@
+import { inMicroEnv } from '@/utils/index'
 export const handleGetParamString = (data: any = {}) => {
 	const queryArray: Array<string> = []
 	Object.keys(data).map((key) => {
@@ -15,8 +16,8 @@ interface IRequestProps {
 	params?: any
 }
 
+// const BaseUrl = inMicroEnv ? 'http://micro.abclive.cloud' : ''
 const BaseUrl = ''
-
 const handletransformData = (data: any, method: string, headers: any) => {
 	if (method === 'GET') {
 		return null
