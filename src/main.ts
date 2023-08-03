@@ -8,7 +8,7 @@ import App from './App.vue'
 
 // new VConsole()
 
-// 1
+// 12
 
 createApp(App).use(RouterConfig).mount('#app')
 
