@@ -51,14 +51,15 @@ deploy:
   tags:
     - front-docker-1
   before_script:
-    - chmod 777 ./depoly/version.sh
-    - . ./depoly/version.sh
     - if [[ "$CI_COMMIT_REF_NAME" == "master" ]] || [[ "$CI_COMMIT_REF_NAME" == "main" ]]; then  echo "SELF_DOMAIN_NAME=''" >> .env; else echo "SELF_DOMAIN_NAME=-$CI_COMMIT_REF_NAME" >> .env;  fi;
     - ls -las
     - pwd
     - sed 's/servername/'"$CI_COMMIT_REF_NAME"'/g' docker-compose.yaml >docker-compose-updated.yaml
     - cat docker-compose-updated.yaml
   script:
+    - chmod 777 ./depoly/version.sh
+    - . ./depoly/version.sh
+    - cat ./version
     - docker-compose -f docker-compose-updated.yaml up -d --build
   environment:
     name: canvas
