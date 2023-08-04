@@ -1,18 +1,18 @@
 image: node:16.3.0
 
 stages:
-  - makeLogFile
-  - deploy
-  - notification
   - artifacts
+  # - makeLogFile
+  # - deploy
+  # - notification
 
-makeLogFile:
-  stage: makeLogFile
-  script:
-    - chmod 777 ./depoly/version.sh
-    - . ./depoly/version.sh
-    - cat ./version
-  interruptible: true
+# makeLogFile:
+#   stage: makeLogFile
+#   script:
+#     - chmod 777 ./depoly/version.sh
+#     - . ./depoly/version.sh
+#     - cat ./version
+#   interruptible: true
 
 artifacts:
   stage: artifacts
@@ -37,28 +37,27 @@ artifacts:
   #   - main
   #   - master
   interruptible: true
+# deploy:
+#   image: docker/compose:latest
+#   stage: deploy
+#   tags:
+#     - front-docker-1
+#   before_script:
+#     - if [[ "$CI_COMMIT_REF_NAME" == "master" ]] || [[ "$CI_COMMIT_REF_NAME" == "main" ]]; then  echo "SELF_DOMAIN_NAME=''" >> .env; else echo "SELF_DOMAIN_NAME=-$CI_COMMIT_REF_NAME" >> .env;  fi;
+#     - ls -las
+#     - pwd
+#     - sed 's/servername/'"$CI_COMMIT_REF_NAME"'/g' docker-compose.yaml >docker-compose-updated.yaml
+#     - cat docker-compose-updated.yaml
+#   script:
+#     - docker-compose -f docker-compose-updated.yaml up -d --build
+#   environment:
+#     name: canvas
+#     url: https://canvas.abclive.cloud
+#   interruptible: true
 
-deploy:
-  image: docker/compose:latest
-  stage: deploy
-  tags:
-    - front-docker-1
-  before_script:
-    - if [[ "$CI_COMMIT_REF_NAME" == "master" ]] || [[ "$CI_COMMIT_REF_NAME" == "main" ]]; then  echo "SELF_DOMAIN_NAME=''" >> .env; else echo "SELF_DOMAIN_NAME=-$CI_COMMIT_REF_NAME" >> .env;  fi;
-    - ls -las
-    - pwd
-    - sed 's/servername/'"$CI_COMMIT_REF_NAME"'/g' docker-compose.yaml >docker-compose-updated.yaml
-    - cat docker-compose-updated.yaml
-  script:
-    - docker-compose -f docker-compose-updated.yaml up -d --build
-  environment:
-    name: canvas
-    url: https://canvas.abclive.cloud
-  interruptible: true
-
-notification:
-  stage: notification
-  tags:
-    - shell-1
-  script:
-    - . ./depoly/notification.sh
+# notification:
+#   stage: notification
+#   tags:
+#     - shell-1
+#   script:
+#     - . ./depoly/notification.sh
