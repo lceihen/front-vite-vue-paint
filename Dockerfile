@@ -16,6 +16,14 @@ ADD . /code
 
 RUN npm run build
 
+RUN wget http://gosspublic.alicdn.com/ossutil/1.6.18/ossutil64
+
+RUN chmod 755 ossutil64
+
+RUN ./ossutil64 config -e oss-cn-guangzhou.aliyuncs.com -i LTAI5tC8kTqenE6EUQoQTx63 -k rjM8GJtrWx3MMCmLXBYYXvTitH8Ka2 -L CH --loglevel debug -c ~/.ossutilconfig
+
+RUN ./ossutil64 -c ~/.ossutilconfig cp -r -f dist oss://lcsubappassets/
+
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder code/dist /usr/share/nginx/html
