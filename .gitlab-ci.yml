@@ -11,6 +11,7 @@ makeLogFile:
   script:
     - chmod 777 ./depoly/version.sh
     - . ./depoly/version.sh
+    - cat ./version
   interruptible: true
 
 # artifacts:
