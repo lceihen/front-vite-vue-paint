@@ -15,7 +15,7 @@ makeLogFile:
   interruptible: true
 
 artifacts:
-  stage: artifacts
+  stage: deploy
   script:
     - node -v
     - npm -v
