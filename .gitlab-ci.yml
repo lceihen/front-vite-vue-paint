@@ -33,9 +33,9 @@ artifacts:
       files:
         - pnpm-lock.yaml
         - package.json
-  only:
-    - main
-    - master
+  # only:
+  #   - main
+  #   - master
   interruptible: true
 
 deploy:
