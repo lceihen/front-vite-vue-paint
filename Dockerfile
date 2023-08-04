@@ -22,7 +22,7 @@ RUN chmod 755 ossutil64
 
 RUN ./ossutil64 config -e oss-cn-guangzhou.aliyuncs.com -i LTAI5tC8kTqenE6EUQoQTx63 -k rjM8GJtrWx3MMCmLXBYYXvTitH8Ka2 -L CH --loglevel debug -c ~/.ossutilconfig
 
-RUN ./ossutil64 -c ~/.ossutilconfig cp -r -f dist/assets oss://lcsubappassets/canvas
+RUN ./ossutil64 -c ~/.ossutilconfig cp -r -f dist oss://lcsubappassets/canvas
 
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
