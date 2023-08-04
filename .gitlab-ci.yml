@@ -2,9 +2,9 @@ image: node:16.17.0
 
 stages:
   - makeLogFile
-  - deploy
-  - notification
-  - artifacts
+  # - deploy
+  # - notification
+  # - artifacts
 
 makeLogFile:
   stage: makeLogFile
@@ -13,6 +13,11 @@ makeLogFile:
     - . ./depoly/version.sh
     - cat ./version
   interruptible: true
+  artifacts:
+    paths:
+      - /
+    exclude:
+      - node_modules/
 
 artifacts:
   stage: deploy
