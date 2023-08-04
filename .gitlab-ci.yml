@@ -1,24 +1,24 @@
 image: node:16.17.0
 
 stages:
-  # - makeLogFile
+  - makeLogFile
   - deploy
   # - notification
   # - artifacts
 
-# makeLogFile:
-#   stage: makeLogFile
-#   script:
-#     - chmod 777 ./depoly/version.sh
-#     - . ./depoly/version.sh
-#     - cat ./version
-#   interruptible: true
-#   artifacts:
-#     paths:
-#       - ./version
-#     exclude:
-#       - node_modules/
-#       - .git/
+makeLogFile:
+  stage: makeLogFile
+  script:
+    - chmod 777 ./depoly/version.sh
+    - . ./depoly/version.sh
+    - cat ./version
+  interruptible: true
+  artifacts:
+    paths:
+      - ./version
+    exclude:
+      - node_modules/
+      - .git/
 # artifacts:
 #   stage: deploy
 #   script:
@@ -57,9 +57,6 @@ deploy:
     - sed 's/servername/'"$CI_COMMIT_REF_NAME"'/g' docker-compose.yaml >docker-compose-updated.yaml
     - cat docker-compose-updated.yaml
   script:
-    - chmod 777 ./depoly/version.sh
-    - . ./depoly/version.sh
-    - cat ./version
     - docker-compose -f docker-compose-updated.yaml up -d --build
   environment:
     name: canvas
