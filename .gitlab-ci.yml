@@ -56,24 +56,13 @@ deploy:
     - pwd
     - sed 's/servername/'"$CI_COMMIT_REF_NAME"'/g' docker-compose.yaml >docker-compose-updated.yaml
     - cat docker-compose-updated.yaml
+    - cat ./version
   script:
     - docker-compose -f docker-compose-updated.yaml up -d --build
   environment:
     name: canvas
     url: https://canvas.abclive.cloud
   interruptible: true
-  artifacts:
-    paths:
-      - dist/
-    exclude:
-      - node_modules/
-      - .git/
-  cache:
-    when: on_success
-    key:
-      files:
-        - pnpm-lock.yaml
-        - package.json
 # notification:
 #   stage: notification
 #   tags:
