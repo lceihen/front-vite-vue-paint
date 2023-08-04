@@ -1,24 +1,24 @@
 image: node:16.17.0
 
 stages:
-  - makeLogFile
+  # - makeLogFile
   - deploy
   # - notification
   # - artifacts
 
-makeLogFile:
-  stage: makeLogFile
-  script:
-    - chmod 777 ./depoly/version.sh
-    - . ./depoly/version.sh
-    - cat ./version
-  interruptible: true
-  artifacts:
-    paths:
-      - ./version
-    exclude:
-      - node_modules/
-      - .git/
+# makeLogFile:
+#   stage: makeLogFile
+#   script:
+#     - chmod 777 ./depoly/version.sh
+#     - . ./depoly/version.sh
+#     - cat ./version
+#   interruptible: true
+#   artifacts:
+#     paths:
+#       - ./version
+#     exclude:
+#       - node_modules/
+#       - .git/
 # artifacts:
 #   stage: deploy
 #   script:
@@ -29,17 +29,17 @@ makeLogFile:
 #     - pnpm config set registry https://registry.npm.taobao.org/
 #     - pnpm install
 #     - pnpm run build
-#   artifacts:
-#     paths:
-#       - dist/
-#     exclude:
-#       - node_modules/
-#   cache:
-#     when: on_success
-#     key:
-#       files:
-#         - pnpm-lock.yaml
-#         - package.json
+# artifacts:
+#   paths:
+#     - dist/
+#   exclude:
+#     - node_modules/
+# cache:
+#   when: on_success
+#   key:
+#     files:
+#       - pnpm-lock.yaml
+#       - package.json
 #   # only:
 #   #   - main
 #   #   - master
@@ -51,6 +51,8 @@ deploy:
   tags:
     - front-docker-1
   before_script:
+    - chmod 777 ./depoly/version.sh
+    - . ./depoly/version.sh
     - if [[ "$CI_COMMIT_REF_NAME" == "master" ]] || [[ "$CI_COMMIT_REF_NAME" == "main" ]]; then  echo "SELF_DOMAIN_NAME=''" >> .env; else echo "SELF_DOMAIN_NAME=-$CI_COMMIT_REF_NAME" >> .env;  fi;
     - ls -las
     - pwd
@@ -62,6 +64,18 @@ deploy:
     name: canvas
     url: https://canvas.abclive.cloud
   interruptible: true
+  artifacts:
+    paths:
+      - dist/
+    exclude:
+      - node_modules/
+      - .git/
+  cache:
+    when: on_success
+    key:
+      files:
+        - pnpm-lock.yaml
+        - package.json
 # notification:
 #   stage: notification
 #   tags:
