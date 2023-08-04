@@ -2,43 +2,43 @@ image: node:16.17.0
 
 stages:
   - deploy
-  # - makeLogFile
-  # - notification
-  # - artifacts
+  - makeLogFile
+  - notification
+  - artifacts
 
-# makeLogFile:
-#   stage: makeLogFile
-#   script:
-#     - chmod 777 ./depoly/version.sh
-#     - . ./depoly/version.sh
-#     - cat ./version
-#   interruptible: true
+makeLogFile:
+  stage: makeLogFile
+  script:
+    - chmod 777 ./depoly/version.sh
+    - . ./depoly/version.sh
+    - cat ./version
+  interruptible: true
 
-# artifacts:
-#   stage: artifacts
-#   script:
-#     - node -v
-#     - npm -v
-#     - npm config set registry http://registry.npm.taobao.org/
-#     - npm install -g pnpm
-#     - pnpm config set registry https://registry.npm.taobao.org/
-#     - pnpm install
-#     - pnpm run build
-#   artifacts:
-#     paths:
-#       - dist/
-#     exclude:
-#       - node_modules/
-#   cache:
-#     when: on_success
-#     key:
-#       files:
-#         - pnpm-lock.yaml
-#         - package.json
-#   # only:
-#   #   - main
-#   #   - master
-#   interruptible: true
+artifacts:
+  stage: artifacts
+  script:
+    - node -v
+    - npm -v
+    - npm config set registry http://registry.npm.taobao.org/
+    - npm install -g pnpm
+    - pnpm config set registry https://registry.npm.taobao.org/
+    - pnpm install
+    - pnpm run build
+  artifacts:
+    paths:
+      - dist/
+    exclude:
+      - node_modules/
+  cache:
+    when: on_success
+    key:
+      files:
+        - pnpm-lock.yaml
+        - package.json
+  # only:
+  #   - main
+  #   - master
+  interruptible: true
 
 deploy:
   image: docker/compose:latest
@@ -57,9 +57,9 @@ deploy:
     name: canvas
     url: https://canvas.abclive.cloud
   interruptible: true
-# notification:
-#   stage: notification
-#   tags:
-#     - shell-1
-#   script:
-#     - . ./depoly/notification.sh
+notification:
+  stage: notification
+  tags:
+    - shell-1
+  script:
+    - . ./depoly/notification.sh
