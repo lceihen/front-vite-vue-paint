@@ -2,8 +2,6 @@ FROM node:16.17.0 as builder
 
 WORKDIR /code
 
-RUN cat ./version
-
 ADD package.json package-lock.json /code/
 
 RUN npm config set registry http://registry.npm.taobao.org/
