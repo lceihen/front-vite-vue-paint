@@ -16,6 +16,8 @@ ADD . /code
 
 RUN npm run build
 
+RUN ls -las
+
 RUN wget http://gosspublic.alicdn.com/ossutil/1.6.18/ossutil64
 
 RUN chmod 755 ossutil64
