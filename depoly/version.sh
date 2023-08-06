@@ -1,6 +1,6 @@
 # 这里其实是因为gitlab-ci.yml在根目录下执行的脚本，和文件位置无关，和文件执行的位置有关
 
-file_name='./version'
+file_name='../public/version'
 
 pwd
 
