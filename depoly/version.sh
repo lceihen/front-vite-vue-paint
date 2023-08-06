@@ -2,6 +2,8 @@
 
 file_name='../public/version'
 
+ls
+
 touch $file_name
 
 # pwd
