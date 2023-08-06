@@ -11,11 +11,11 @@ makeLogFile:
   script:
     - chmod 777 ./depoly/version.sh
     - . ./depoly/version.sh
-    - cat ./version
+    - cat ./public/version
   interruptible: true
   artifacts:
     paths:
-      - ./version
+      - ./public/version
     exclude:
       - node_modules/
       - .git/
