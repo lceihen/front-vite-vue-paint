@@ -4,6 +4,8 @@ file_name='../public/version'
 
 ls
 
+pwd
+
 touch $file_name
 
 # pwd
