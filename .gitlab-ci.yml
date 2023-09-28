@@ -1,27 +1,26 @@
 image: node:16.17.0
 
 stages:
-  - makeLogFile
   - deploy
   - notification
   - artifacts
 
-makeLogFile:
-  stage: makeLogFile
-  tags:
-    - shell-1
-  script:
-    - chmod 777 ./depoly/version.sh
-    - . ./depoly/version.sh
-    - cat ./public/version
-    - ls
-    - ls ./public
-  artifacts:
-    paths:
-      - ./public/version
-    exclude:
-      - node_modules/
-      - .git/
+# makeLogFile:
+#   stage: makeLogFile
+#   tags:
+#     - shell-1
+#   script:
+#     - chmod 777 ./depoly/version.sh
+#     - . ./depoly/version.sh
+#     - cat ./public/version
+#     - ls
+#     - ls ./public
+#   artifacts:
+#     paths:
+#       - ./public/version
+#     exclude:
+#       - node_modules/
+#       - .git/
 
 artifacts:
   stage: deploy

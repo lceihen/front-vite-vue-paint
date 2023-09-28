@@ -8,11 +8,15 @@ RUN npm config set registry http://registry.npm.taobao.org/
 
 RUN npm install -g pnpm
 
+
 RUN pnpm config set registry https://registry.npm.taobao.org/
 
 RUN pnpm install
 
 ADD . /code
+
+RUN . /code/depoly/version.sh
+
 
 RUN npm run build
 
