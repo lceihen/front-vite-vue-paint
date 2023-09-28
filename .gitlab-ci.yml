@@ -12,13 +12,6 @@ makeLogFile:
     - chmod 777 ./depoly/version.sh
     - . ./depoly/version.sh
     - cat ./public/version
-  interruptible: true
-  artifacts:
-    paths:
-      - ./public/version
-    exclude:
-      - node_modules/
-      - .git/
 
 artifacts:
   stage: deploy
